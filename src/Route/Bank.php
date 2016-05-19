@@ -59,7 +59,7 @@ class Bank
      */
     public static function getRequestedRoute(Metrol\Request $request)
     {
-        foreach ( self::$routes as $route )
+        foreach ( array_reverse(self::$routes) as $route )
         {
             $matched = Metrol\Route\Match::check($request, $route);
 
