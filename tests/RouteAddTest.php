@@ -109,7 +109,7 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($match);
 
         // The found arguments should have been applied to the route
-        $args = $route->getFoundArguments();
+        $args = $route->getArguments();
         $this->assertEquals(1234, $args[0]);
 
         // Should not match a floating point
