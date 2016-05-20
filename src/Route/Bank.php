@@ -53,11 +53,11 @@ class Bank
     /**
      * Find a route for the specified Request
      *
-     * @param Metrol\Request $request
+     * @param Metrol\Route\Request $request
      *
      * @return Metrol\Route|null
      */
-    public static function getRequestedRoute(Metrol\Request $request)
+    public static function getRequestedRoute(Metrol\Route\Request $request)
     {
         foreach ( array_reverse(self::$routes) as $route )
         {
