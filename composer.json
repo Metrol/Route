@@ -19,8 +19,7 @@
     },
 
     "require-dev": {
-        "phpunit/phpunit" : "4.8.*",
-        "metrol/request"  : "dev-master"
+        "phpunit/phpunit" : "4.8.*"
     },
 
     "autoload": {
