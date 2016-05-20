@@ -175,7 +175,7 @@ class Route
      *
      * @return $this
      */
-    public function setHTTPMethod($method)
+    public function setHttpMethod($method)
     {
         $method = strtoupper($method);
 
@@ -209,7 +209,7 @@ class Route
      *
      * @return string
      */
-    public function getHTTPMethod()
+    public function getHttpMethod()
     {
         return $this->httpMethod;
     }
