@@ -248,7 +248,7 @@ class Route
      *
      * @return $this
      */
-    public function setFoundArguments(array $arguments)
+    public function setArguments(array $arguments)
     {
         $this->foundArguments = $arguments;
 
@@ -260,7 +260,7 @@ class Route
      *
      * @return array
      */
-    public function getFoundArguments()
+    public function getArguments()
     {
         return $this->foundArguments;
     }

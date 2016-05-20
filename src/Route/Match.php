@@ -106,7 +106,7 @@ class Match
 
         if ( !empty($this->args) )
         {
-            $this->route->setFoundArguments($this->args);
+            $this->route->setArguments($this->args);
         }
 
         return true;
