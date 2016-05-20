@@ -32,7 +32,7 @@ class Match
     /**
      * HTTP Request coming through
      *
-     * @var Metrol\Request
+     * @var Metrol\Route\Request
      */
     private $request;
 
@@ -65,12 +65,12 @@ class Match
      * Run the comparison on the route versus the request.  Will return true on
      * a match, and will populate the arguments of the route if any are found.
      *
-     * @param Metrol\Request $request
+     * @param Metrol\Route\Request $request
      * @param Metrol\Route   $route
      *
      * @return boolean True on match, false if no match.
      */
-    public static function check(Metrol\Request $request, Metrol\Route $route)
+    public static function check(Metrol\Route\Request $request, Metrol\Route $route)
     {
         $inst = static::getInstance();
 
@@ -123,7 +123,7 @@ class Match
         $req = $this->request;
         $rt  = $this->route;
 
-        if ( strtoupper($req->server()->method) != $rt->getHTTPMethod() )
+        if ( strtoupper($req->getHttpMethod()) != $rt->getHttpMethod() )
         {
             self::$noMatchReason = 'Wrong HTTP Method';
             return false;
@@ -139,7 +139,7 @@ class Match
 
         // There had best be a slash somewhere in the URI.
         //
-        if ( strpos($req->server()->uri, '/') === false )
+        if ( strpos($req->getUri(), '/') === false )
         {
             self::$noMatchReason = 'No slashes in the requested URI';
             return false;
@@ -159,7 +159,7 @@ class Match
         $req = $this->request;
         $rt  = $this->route;
 
-        $reqSegments = $this->explodeURI($req->server()->uri);
+        $reqSegments = $this->explodeURI($req->getUri());
         $rtSegments  = $this->explodeURI($rt->getMatchString());
 
         // Be sure to handle a doc root request properly
