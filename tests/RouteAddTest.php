@@ -9,7 +9,7 @@
 use \Metrol\Route;
 use \Metrol\Route\Action;
 use \Metrol\Route\Match;
-use \Metrol\Request;
+use \Metrol\Route\Request;
 
 /**
  * Insure that routes can be created, given information, and have be able to
@@ -30,7 +30,7 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
 
         $route = new Route('testroute');
         $route->setMatchString('/imaroute/')
-            ->setHTTPMethod($route::HTTP_GET)
+            ->setHttpMethod($route::HTTP_GET)
             ->addAction($action);
 
         $actions = $route->getActions();
@@ -40,7 +40,7 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('/imaroute/', $route->getMatchString());
         $this->assertEquals('Controller', $actions[0]->getClass());
         $this->assertEquals('doSomething', $methods[0]);
-        $this->assertEquals('GET', $route->getHTTPMethod());
+        $this->assertEquals('GET', $route->getHttpMethod());
     }
 
     /**
@@ -51,16 +51,16 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
     {
         $route = new Route('testroute');
         $route->setMatchString('/imaroute/')
-              ->setHTTPMethod($route::HTTP_GET);
+              ->setHttpMethod($route::HTTP_GET);
 
         $request = new Request;
-        $request->server()->uri = '/imaroute/';
-        $request->server()->method = 'GET';
+        $request->setUri('/imaroute/');
+        $request->setHttpMethod('GET');
 
         $match = Match::check($request, $route);
         $this->assertTrue($match);
 
-        $request->server()->uri = '/notaroute/';
+        $request->setUri('/notaroute/');
         $match = Match::check($request, $route);
         $this->assertFalse($match);
     }
@@ -73,17 +73,17 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
     {
         $route = new Route('View by ID');
         $route->setMatchString('/view/:num/')
-            ->setHTTPMethod(Route::HTTP_GET);
+            ->setHttpMethod(Route::HTTP_GET);
 
         $request = new Request;
-        $request->server()->uri = '/view/1234/';
-        $request->server()->method = 'GET';
+        $request->setUri('/view/1234/');
+        $request->setHttpMethod('GET');
 
         $match = Match::check($request, $route);
 
         $this->assertTrue($match);
 
-        $request->server()->uri = '/view/Nope/';
+        $request->setUri('/view/Nope/');
         $match = Match::check($request, $route);
 
         $this->assertFalse($match);
@@ -97,13 +97,13 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
     {
         $route = new Route('View by ID');
         $route->setMatchString('/view/:int/')
-            ->setHTTPMethod(Route::HTTP_GET);
+            ->setHttpMethod(Route::HTTP_GET);
 
         $request = new Request;
-        $request->server()->method = 'GET';
+        $request->setHttpMethod('GET');
 
         // Should match a real integer in the 2nd segment
-        $request->server()->uri = '/view/1234/';
+        $request->setUri('/view/1234/');
 
         $match = Match::check($request, $route);
         $this->assertTrue($match);
@@ -113,13 +113,13 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1234, $args[0]);
 
         // Should not match a floating point
-        $request->server()->uri = '/view/12.34/';
+        $request->setUri('/view/12.34/');
         $match = Match::check($request, $route);
 
         $this->assertFalse($match);
 
         // Should not match a string
-        $request->server()->uri = '/view/Nope/';
+        $request->setUri('/view/Nope/');
         $match = Match::check($request, $route);
 
         $this->assertFalse($match);
@@ -135,31 +135,31 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
         Route\Bank::
         addRoute((new Route('Im a route'))
             ->setMatchString('/imaroute/')
-            ->setHTTPMethod(Route::HTTP_GET));
+            ->setHttpMethod(Route::HTTP_GET));
 
         Route\Bank::
         addRoute((new Route('Im a route post'))
             ->setMatchString('/imaroute/')
-            ->setHTTPMethod(Route::HTTP_POST));
+            ->setHttpMethod(Route::HTTP_POST));
 
         Route\Bank::
         addRoute((new Route('View by ID'))
             ->setMatchString('/view/:int/')
-            ->setHTTPMethod(Route::HTTP_GET));
+            ->setHttpMethod(Route::HTTP_GET));
 
         $fetched = Route\Bank::getNamedRoute('Im a route post');
         $this->assertNotNull($fetched);
         $this->assertEquals('Im a route post', $fetched->getName());
 
         $request = new Request;
-        $request->server()->uri = '/imaroute/';
-        $request->server()->method = 'GET';
+        $request->setUri('/imaroute/');
+        $request->setHttpMethod('GET');
 
         $fetched = Route\Bank::getRequestedRoute($request);
         $this->assertNotNull($fetched);
         $this->assertEquals('Im a route', $fetched->getName());
 
-        $request->server()->uri = '/view/1234/';
+        $request->setUri('/view/1234/');
         $fetched = Route\Bank::getRequestedRoute($request);
         $this->assertNotNull($fetched);
         $this->assertEquals('View by ID', $fetched->getName());
