@@ -47,9 +47,10 @@ $route->setMatchString('/view/:int/')
 ```
 
 There are 3 things that are happening here...
-First, it requires that in order to be a match there is an integer in the second segment of the URL.
-Secondly, if there's a match the `1234` is automatically applied to the arguments for that route.
-Lastly, any other segments following what was specified will also be added to the list of arguments.
+
+1. A requirement that in order to be a match there is an integer in the second segment of the URL.
+2. If there's a match the `1234` is automatically applied to the arguments for that route.
+3. Any other segments following what was specified will also be added to the list of arguments.
 
 When the `Route\Match` finds a matching route, all the arguments it finds during this process are applied back to the route itself.  So here you can put it all together.
 
@@ -64,3 +65,16 @@ $fetchRoute = \Metrol\Route\Bank::getRequestedRoute( new \Metrol\Route\Request )
 
 $args = $fetchRoute->getArguments()
 ```
+
+Aside from hints for `:int`, there is also support for `:num` and `:str`.  There's more information about configuring ranges and sizes that I still need to fully document.
+
+## Still TODO
+
+My next addition to this library is to build out a `Dispatch` class that can take that found route and run all the actions assigned to it.  Pretty straight forward stuff.
+After that, I'm looking to setup some `Loader` classes that can create routes and deposit them in the `Bank` for you.  I would like to have 3 basic loader types...
+
+1. An INI file.
+2. A JSON file.
+3. A PHP Controller Class
+
+The third option may be a bit slower to run, but should make for a faster configuration.  Looking to use Reflection on specified classes to examine method names and signatures to produce routes.  More details on this as work progresses.
