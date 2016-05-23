@@ -176,7 +176,6 @@ class Match
 
         $reqSegmentCount = count($reqSegments);
         $rtSegmentCount  = count($rtSegments);
-        $rtMaxParams     = $rt->getMaxParameters();
 
         // Need to at LEAST have as many segments in the Request as in the
         // Route match filter.
@@ -190,10 +189,14 @@ class Match
         // The URI segments can't exceed the number of segments in the filter plus
         // the allowed parameters.
         //
-        if ( $reqSegmentCount > $rtSegmentCount + $rtMaxParams )
+        if ( $rt->getMaxParameters() !== null)
         {
-            self::$noMatchReason = 'Too many segments in the requested segment';
-            return false;
+            if ( $reqSegmentCount > $rtSegmentCount + $rt->getMaxParameters() )
+            {
+                self::$noMatchReason = 'Too many segments in the requested segment';
+
+                return false;
+            }
         }
 
         if ( ! $this->matchSegments($reqSegments, $rtSegments) )
@@ -207,8 +210,8 @@ class Match
     /**
      * Walk through all the segments looking to see if things are matching up
      *
-     * @param array $reqSegments Segments from the requested URI
-     * @param array $rtSegments Segments from the Route match string
+     * @param string[] $reqSegments Segments from the requested URI
+     * @param string[] $rtSegments Segments from the Route match string
      *
      * @return boolean TRUE if all matched
      */
@@ -233,7 +236,32 @@ class Match
             }
         }
 
+        $this->appendExtraSegments($reqSegments, $rtSegments);
+
         return true;
+    }
+
+    /**
+     * Any extra segments not specified in the requested match and less than the
+     * maximum parameters need to be added as arguments.
+     *
+     * @param string[] $reqSegments
+     * @param string[] $rtSegments
+     */
+    private function appendExtraSegments(array $reqSegments, array $rtSegments)
+    {
+        $reqCount = count($reqSegments);
+        $rtCount  = count($rtSegments);
+
+        if ( $reqCount == $rtCount )
+        {
+            return;
+        }
+
+        for ( $i = $rtCount; $i < $reqCount; $i++ )
+        {
+            $this->args[] = $reqSegments[$i];
+        }
     }
 
     /**
@@ -258,6 +286,7 @@ class Match
             self::$noMatchReason = 'Literal segments ' . $reqSegment . ' and '
                 . $rtSegment . ' did not match';
         }
+
         return $rtn;
     }
 

@@ -126,6 +126,37 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Make sure that extra arguments not hinted are properly gathered up and
+     * passed to the route.
+     *
+     */
+    public function testOverflowArguments()
+    {
+        $route = (new Route('View by ID'))->setMatchString('/view/:int/');
+        $request = (new Request)
+            ->setUri('/view/1234/abcd/xyz/')
+            ->setHttpMethod('GET');
+
+        $match = Match::check($request, $route);
+        $args  = $route->getArguments();
+
+        $this->assertTrue($match);
+        $this->assertEquals('1234', $args[0]);
+        $this->assertEquals('abcd', $args[1]);
+        $this->assertEquals('xyz',  $args[2]);
+
+        // Now set a max parameter value to make sure we don't get false hits
+        $route->setMaxParameters(1);
+        $match = Match::check($request, $route);
+
+        $this->assertFalse($match);
+
+        $route->setMaxParameters(2);
+        $match = Match::check($request, $route);
+        $this->assertTrue($match);
+    }
+
+    /**
      * Make a run on the bank for a couple of routes to see if deposits and
      * withdrawls are working.
      *
