@@ -31,11 +31,43 @@ class Action
     /**
      * Initializes the Action Definition
      *
+     * @param string $action Take in a string with a "Class:Action" format to
+     *                       simplify creating a single action Action.
      */
-    public function __construct()
+    public function __construct($action = null)
     {
         $this->controllerClass = '';
         $this->methodSet       = array();
+
+        if ( $action !== null )
+        {
+            $this->setAction($action);
+        }
+    }
+
+    /**
+     * Looks for an action string that was passed into the constructor, and
+     * attempts to put it into a class/method assignment.
+     *
+     * @param string $action
+     */
+    private function setAction($action)
+    {
+        if ( strpos($action, ':') === false )
+        {
+            return;
+        }
+
+        $action = preg_replace('/:{2,}/', ':', $action);
+
+        if ( substr_count($action, ':') != 1 )
+        {
+            return;
+        }
+
+        list($class, $method) = explode(':', $action);
+
+        $this->setClass($class)->addMethod($method);
     }
 
     /**
