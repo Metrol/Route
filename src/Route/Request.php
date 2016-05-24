@@ -91,6 +91,11 @@ class Request
      */
     public function setUri($uri)
     {
+        if ( strpos($uri, '?') !== false )
+        {
+            $uri = substr($uri, 0, strpos($uri, '?') );
+        }
+
         $this->uri = $uri;
 
         return $this;
@@ -113,7 +118,16 @@ class Request
      */
     public function setHttpMethod($httpMethod)
     {
-        $this->httpMethod = $httpMethod;
+        $httpMethod = strtoupper($httpMethod);
+
+        $allowedMethods = [
+            'GET', 'POST', 'PUT', 'DELETE'
+        ];
+
+        if ( in_array($httpMethod, $allowedMethods) )
+        {
+            $this->httpMethod = $httpMethod;
+        }
 
         return $this;
     }
