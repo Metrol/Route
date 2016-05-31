@@ -25,8 +25,8 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
     public function testRouteCreate()
     {
         $action = new Action;
-        $action->setClass('Controller')
-            ->addMethod('doSomething');
+        $action->setControllerClass('Controller')
+            ->setControllerMethod('doSomething');
 
         $route = new Route('testroute');
         $route->setMatchString('/imaroute/')
@@ -34,12 +34,12 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
             ->addAction($action);
 
         $actions = $route->getActions();
-        $methods = $actions[0]->getMethods();
+        $methods = $actions[0]->getControllerMethod();
 
         $this->assertEquals('testroute', $route->getName());
         $this->assertEquals('/imaroute/', $route->getMatchString());
-        $this->assertEquals('Controller', $actions[0]->getClass());
-        $this->assertEquals('doSomething', $methods[0]);
+        $this->assertEquals('\Controller', $actions[0]->getControllerClass());
+        $this->assertEquals('doSomething', $methods);
         $this->assertEquals('GET', $route->getHttpMethod());
     }
 

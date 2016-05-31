@@ -16,26 +16,23 @@ use Metrol\Request;
 class Dispatcher
 {
     /**
-     *
-     * @var Route
-     */
-    protected $route;
-
-    /**
+     * The Request object passed into the constructor that will be used to
+     * determine which route to run actions from, and will be passed into
+     * the actions run.
      *
      * @var Request
      */
     protected $request;
 
-
     /**
      * Takes in and saves the Route that will be loaded up along with the
      * Request that came across.
      *
+     * @param Request $request
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
-        $this->request = new Request;
+        $this->request = $request;
     }
 
     /**
@@ -65,15 +62,12 @@ class Dispatcher
                 continue;
             }
 
-            $controllerClass = $action->getClass();
-            $methods         = $action->getMethods();
+            $controllerClass = $action->getControllerClass();
+            $method          = $action->getControllerMethod();
 
             $controller = new $controllerClass($this->request);
 
-            foreach ( $methods as $method )
-            {
-                $out = $controller->$method($arguments);
-            }
+            $out = $controller->$method($arguments);
         }
 
         return $out;

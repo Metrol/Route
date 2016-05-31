@@ -22,11 +22,11 @@ class Action
     protected $controllerClass;
 
     /**
-     * List of methods within a Controller that need to be called
+     * A method within a Controller that needs to be called
      *
-     * @var string[]
+     * @var string
      */
-    protected $methodSet;
+    protected $method;
 
     /**
      * Initializes the Action Definition
@@ -37,7 +37,7 @@ class Action
     public function __construct($action = null)
     {
         $this->controllerClass = '';
-        $this->methodSet       = array();
+        $this->method          = '';
 
         if ( $action !== null )
         {
@@ -46,28 +46,33 @@ class Action
     }
 
     /**
-     * Looks for an action string that was passed into the constructor, and
-     * attempts to put it into a class/method assignment.
+     * Takes in a colon delimited string and seperates it out to the Controller/
+     * Method pair that makes up an action.
      *
      * @param string $action
+     *
+     * @return $this
      */
-    private function setAction($action)
+    public function setAction($action)
     {
         if ( strpos($action, ':') === false )
         {
-            return;
+            return $this;
         }
 
         $action = preg_replace('/:{2,}/', ':', $action);
 
         if ( substr_count($action, ':') != 1 )
         {
-            return;
+            return $this;
         }
 
         list($class, $method) = explode(':', $action);
 
-        $this->setClass($class)->addMethod($method);
+        $this->setControllerClass($class)
+            ->setControllerMethod($method);
+
+        return $this;
     }
 
     /**
@@ -77,11 +82,32 @@ class Action
      *
      * @return $this
      */
-    public function setClass($className)
+    public function setControllerClass($className)
     {
+        // Strip out any spaces
+        $className = preg_replace('/\s+/', '', $className);
+
+        // Just in case name spaces came in with old style delimiters
         $className = str_replace('/', '\\', $className);
         $className = str_replace('.', '\\', $className);
         $className = str_replace('_', '\\', $className);
+
+        // Insure no duplicate delimiters
+        $className = preg_replace('~\\\{2,}~', '\\', $className);
+
+        // Make sure we've got a leading back slash.  All controller classes
+        // should be fully qualified.
+        if ( substr($className, 0, 1) != '\\' )
+        {
+            $className = '\\'.$className;
+        }
+
+        // Strip off any trailing backslashes that may have worked their way in
+        // here.
+        if ( substr($className, -1) == '\\' )
+        {
+            $className = substr($className, 0, -1);
+        }
 
         $this->controllerClass = $className;
 
@@ -89,18 +115,27 @@ class Action
     }
 
     /**
-     * Puts a new method on the stack to be called
+     * Assigns the method to be called
      *
      * @param string $method Name of the method in the Controller Class to call
      *
      * @return $this
      */
-    public function addMethod($method)
+    public function setControllerMethod($method)
     {
-        if ( !in_array($method, $this->methodSet) )
+        // Make sure we didn't get a method that looks like a function call
+        if ( strpos($method, '(') !== false )
         {
-            $this->methodSet[] = $method;
+            $method = substr($method, 0, strpos($method, '('));
         }
+
+        // Any spaces to be converted to underscores
+        $method = preg_replace('/\s+/', ' ', $method);
+        $method = preg_replace('/\s+/', '_', $method);
+
+        $this->method = $method;
+
+        return $this;
     }
 
     /**
@@ -118,7 +153,7 @@ class Action
             $rtn = false;
         }
 
-        if ( empty($this->methodSet) )
+        if ( empty($this->method) )
         {
             $rtn = false;
         }
@@ -131,7 +166,7 @@ class Action
      *
      * @return string
      */
-    public function getClass()
+    public function getControllerClass()
     {
         return $this->controllerClass;
     }
@@ -139,11 +174,10 @@ class Action
     /**
      * Provide the list of methods that need to be called within the Controller
      *
-     * @return string[]
+     * @return string
      */
-    public function getMethods()
+    public function getControllerMethod()
     {
-        return $this->methodSet;
+        return $this->method;
     }
-
 }
