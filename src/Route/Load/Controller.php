@@ -304,7 +304,7 @@ class Controller
                 {
                     $value = substr($docLine, strlen($attrib) + 1 );
 
-                    $rtn[$attrib] = $value;
+                    $rtn[$attrib] = trim($value);
                 }
             }
         }

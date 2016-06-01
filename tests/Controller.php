@@ -33,9 +33,9 @@ class Controller
     /**
      * Has a custom route name and match string in the docBlock here.
      *
-     * @match /stuff/:int/
+     * @match     /stuff/:int/
      * @routename Page View
-     * @maxparam 0
+     * @maxparam  0
      *
      * @param array
      *
