@@ -27,16 +27,16 @@ class RouteActionTest extends \PHPUnit_Framework_TestCase
         $method = $act->getControllerMethod();
         $this->assertEquals('testMethodToCall', $method);
 
-        // Make sure this doesn't work without the proper delimeter
+        // Make sure this doesn't work without the proper delimiter
         $act = new Action('TestClass-testMethodToCall');
         $this->assertEquals('', $act->getControllerClass());
 
-        // Multiple delimeters should work.
+        // Multiple delimiters should work.
         $act = new Action('TestClass::testMethodToCall');
         $this->assertEquals('\TestClass', $act->getControllerClass());
         $this->assertEquals('testMethodToCall', $act->getControllerMethod());
 
-        // Multiple delimeters should work. Try an odd number
+        // Multiple delimiters should work. Try an odd number
         $act = new Action('TestClass:::testMethodToCall');
         $this->assertEquals('\TestClass', $act->getControllerClass());
         $this->assertEquals('testMethodToCall', $act->getControllerMethod());
