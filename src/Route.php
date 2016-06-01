@@ -122,6 +122,16 @@ class Route
     }
 
     /**
+     * Provide the Route Reversal object for this route to produce a URL
+     *
+     * @return Route\Reverse
+     */
+    public function getReverse()
+    {
+        return new Route\Reverse($this);
+    }
+
+    /**
      * Add a new Action to the route
      *
      * @param Route\Action $action
