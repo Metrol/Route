@@ -34,13 +34,26 @@ class Controller
      * Has a custom route name and match string in the docBlock here.
      *
      * @match /stuff/:int/
-     * @routeName Page View
+     * @routename Page View
+     * @maxparam 0
      *
      * @param array
      *
      * @return string
      */
     public function get_pageview(array $args)
+    {
+        return '';
+    }
+
+    /**
+     * See if the HTTP method is properly parsed
+     *
+     * @param array
+     *
+     * @return string
+     */
+    public function post_updatestuff(array $args)
     {
         return '';
     }
@@ -55,5 +68,19 @@ class Controller
     private function get_nothing(array $args)
     {
         return '';
+    }
+
+    /**
+     * Should be ignored since it doesn't have an expected prefix
+     *
+     * @routename NonRoute
+     *
+     * @param array
+     *
+     * @return string
+     */
+    public function notARoute(array $args)
+    {
+
     }
 }

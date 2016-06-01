@@ -82,7 +82,35 @@ class RouteLoaderTest extends \PHPUnit_Framework_TestCase
         $route = Bank::getNamedRoute('\Controller:get_view');
 
         $this->assertEquals('\Controller:get_view', $route->getName());
+        $this->assertEquals('/tester/view/', $route->getMatchString());
+        $this->assertEquals('GET', $route->getHttpMethod());
+        $this->assertNull($route->getMaxParameters());
 
+        // Verify a route with a different HTTP method
+        $route = Bank::getNamedRoute('\Controller:post_updatestuff');
+        $this->assertEquals('\Controller:post_updatestuff', $route->getName());
+        $this->assertEquals('/tester/updatestuff/', $route->getMatchString());
+        $this->assertEquals('POST', $route->getHttpMethod());
 
+        // Run some tests on a method that has attributes to parse
+        $route = Bank::getNamedRoute('Page View');
+        $this->assertEquals('Page View', $route->getName());
+        $this->assertEquals('/stuff/:int/', $route->getMatchString());
+        $this->assertEquals(0, $route->getMaxParameters());
+        $this->assertCount(1, $route->getActions());
+
+        $action = $route->getActions()[0];
+
+        $this->assertEquals('\Controller', $action->getControllerClass() );
+        $this->assertEquals('get_pageview', $action->getControllerMethod() );
+
+        // Check that a private method does not create a route.
+        $route = Bank::getNamedRoute('\Controller:get_nothing');
+        $this->assertNull($route);
+
+        // Methods that don't have one of the expected prefixes should be
+        // ignored.
+        $route = Bank::getNamedRoute('NonRoute');
+        $this->assertNull($route);
     }
 }

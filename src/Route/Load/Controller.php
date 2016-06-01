@@ -29,6 +29,14 @@ class Controller
     const METHOD_PUT    = 'put_';
 
     /**
+     *
+     * @const
+     */
+    const ATTR_MATCH     = '@match';
+    const ATTR_NAME      = '@routename';
+    const ATTR_MAX_PARAM = '@maxparam';
+
+    /**
      * The controller class name in question
      *
      * @var string
@@ -43,6 +51,13 @@ class Controller
     private $methodPrefixes;
 
     /**
+     * A list of docBlock attributes to look for when parsing the class
+     *
+     * @var array
+     */
+    private $attributes;
+
+    /**
      * Initialize the object
      *
      */
@@ -55,6 +70,12 @@ class Controller
             self::METHOD_POST,
             self::METHOD_PUT,
             self::METHOD_DELETE
+        ];
+
+        $this->attributes = [
+            self::ATTR_MATCH,
+            self::ATTR_NAME,
+            self::ATTR_MAX_PARAM
         ];
     }
 
@@ -82,7 +103,6 @@ class Controller
         $this->buildRoutes();
     }
 
-
     /**
      * Takes the parsed information, builds out the routes, and adds those
      * routes to the Bank to be looked up later.
@@ -103,10 +123,13 @@ class Controller
                 continue;
             };
 
-            $route = $this->createRoute($method);
-            $this->setMatch($route, $refl, $method);
+            $attribs = $this->parseDocBlockForAttributes($method->getDocComment());
+
+            $route = $this->createRoute($method, $attribs);
+            $this->setMatch($route, $refl, $method, $attribs);
             $this->setMethod($route, $method);
             $this->setAction($route, $method);
+            $this->setParams($route, $attribs);
 
             Bank::addRoute($route);
         }
@@ -116,12 +139,20 @@ class Controller
      * Create the route to be added into the bank
      *
      * @param \ReflectionMethod $method
+     * @param array             $attribs
      *
      * @return Route
      */
-    private function createRoute(\ReflectionMethod $method)
+    private function createRoute(\ReflectionMethod $method, array $attribs)
     {
-        $routeName = $this->controllerName.':'.$method->getName();
+        if ( isset($attribs[self::ATTR_NAME]) )
+        {
+            $routeName = $attribs[self::ATTR_NAME];
+        }
+        else
+        {
+            $routeName = $this->controllerName . ':' . $method->getName();
+        }
 
         $route = new Route($routeName);
 
@@ -166,29 +197,39 @@ class Controller
      * @param Route             $route
      * @param \ReflectionObject $reflCont
      * @param \ReflectionMethod $method
+     * @param array             $attribs
      */
     private function setMatch(Route $route,\ReflectionObject $reflCont,
-                              \ReflectionMethod $method)
+                              \ReflectionMethod $method, array $attribs)
     {
-        if ( $reflCont->hasConstant('MATCH_PREFIX') )
+        if ( isset($attribs[self::ATTR_MATCH]) )
         {
-            $class = $this->controllerName;
-            $matchPre = $class::MATCH_PREFIX;
+            $match = $attribs[self::ATTR_MATCH];
         }
         else
         {
-            $cname = strtolower($reflCont->getShortName());
-            $matchPre = '/' . $cname . '/';
+            if ( $reflCont->hasConstant('MATCH_PREFIX') )
+            {
+                $class    = $this->controllerName;
+                $matchPre = $class::MATCH_PREFIX;
+            }
+            else
+            {
+                $cname    = strtolower($reflCont->getShortName());
+                $matchPre = '/' . $cname . '/';
+            }
+
+            $methodMatch = substr($method->getName(), strpos($method->getName(), '_') + 1);
+
+            $match = $matchPre.$methodMatch.'/';
+
         }
-
-        $methodMatch = substr($method->getName(), strpos($method->getName(), '_') + 1);
-
-        $match = $matchPre.$methodMatch.'/';
 
         $route->setMatchString($match);
     }
 
     /**
+     * Sets the HTTP method for the action
      *
      * @param Route             $route
      * @param \ReflectionMethod $method
@@ -204,6 +245,8 @@ class Controller
     }
 
     /**
+     * Based on the controller name and specified method, add an action for
+     * the route.
      *
      * @param Route  $route
      * @param \ReflectionMethod $method
@@ -215,5 +258,57 @@ class Controller
         $action->setControllerMethod($method->getName());
 
         $route->addAction($action);
+    }
+
+    /**
+     * Sets the maximum parameters to the route if specified in the attributes.
+     *
+     * @param Route $route
+     * @param array $attribs
+     */
+    private function setParams(Route $route, array $attribs)
+    {
+        if ( isset($attribs[self::ATTR_MAX_PARAM]) )
+        {
+            $route->setMaxParameters( $attribs[self::ATTR_MAX_PARAM] );
+        }
+    }
+
+    /**
+     * Parse through the provided docBlock text looking for attributes that can
+     * be passed to a route.
+     *
+     * @param string $docBlock
+     *
+     * @return array Documentation attributes
+     */
+    private function parseDocBlockForAttributes($docBlock)
+    {
+        $rtn = array();
+
+        // See that we've got some kind of attributes before going any further
+        if ( strpos($docBlock, '* @') === false )
+        {
+            return $rtn;
+        }
+
+        $docLines = preg_split ('/$\R?^/m', $docBlock);
+
+        foreach ( $docLines as $docLine )
+        {
+            $docLine = trim(str_replace('* ', '', $docLine));
+
+            foreach ( $this->attributes as $attrib )
+            {
+                if ( strpos($docLine, $attrib) !== false )
+                {
+                    $value = substr($docLine, strlen($attrib) + 1 );
+
+                    $rtn[$attrib] = $value;
+                }
+            }
+        }
+
+        return $rtn;
     }
 }
