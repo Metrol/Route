@@ -219,10 +219,22 @@ class Controller
                 $matchPre = '/' . $cname . '/';
             }
 
-            $methodMatch = substr($method->getName(), strpos($method->getName(), '_') + 1);
+            $methodName = substr($method->getName(), strpos($method->getName(), '_') + 1);
 
-            $match = $matchPre.$methodMatch.'/';
+            if ( empty($methodName) )
+            {
+                $match = $matchPre;
+            }
+            else
+            {
+                $methodMatch = str_replace('_', '/', $methodName);
+                $match       = $matchPre . $methodMatch;
+            }
 
+            if ( substr($match, -1) != '/' )
+            {
+                $match .=  '/';
+            }
         }
 
         $route->setMatchString($match);
