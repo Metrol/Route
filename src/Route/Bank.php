@@ -84,8 +84,9 @@ class Bank
     <thead>
         <tr>
             <td>Route Name</td>
-            <td>HTTP Method</td>
-            <td>Match String</td>
+            <td>HTTP</td>
+            <td>Match</td>
+            <td>Params</td>
             <td>Action</td>
         </tr>
     </thead>
@@ -93,7 +94,10 @@ class Bank
 
 HTML;
 
-        foreach ( self::$routes as $route )
+        /**
+         * @var Metrol\Route $route
+         */
+        foreach ( array_reverse(self::$routes) as $route )
         {
             $actionList = [];
 
@@ -104,12 +108,19 @@ HTML;
             }
 
             $actionCell = implode('<br>', $actionList);
+            $paramCell = $route->getMaxParameters();
+
+            if ( $paramCell === null )
+            {
+                $paramCell = 'null';
+            }
 
             $out .= <<<HTML
         <tr>
             <td>{$route->getName()}</td>
             <td>{$route->getHttpMethod()}</td>
             <td>{$route->getMatchString()}</td>
+            <td>{$paramCell}</td>
             <td>{$actionCell}</td>
         </tr>
         
