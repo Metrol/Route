@@ -112,5 +112,13 @@ class RouteLoaderTest extends \PHPUnit_Framework_TestCase
         // ignored.
         $route = Bank::getNamedRoute('NonRoute');
         $this->assertNull($route);
+
+        // Check that extra underscores turn into slashes from the action to the
+        // match string
+        $route = Bank::getNamedRoute('Page View Wide');
+        $this->assertEquals('/tester/page/view/wide/', $route->getMatchString());
+
+        $route = Bank::getNamedRoute('Page Index Root');
+        $this->assertEquals('/tester/', $route->getMatchString());
     }
 }

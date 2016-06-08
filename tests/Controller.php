@@ -47,6 +47,37 @@ class Controller
     }
 
     /**
+     * Has an underscore in the middle of the method name, which should be
+     * turned into a slash for the match string.
+     *
+     * @routename Page View Wide
+     * @maxparam  0
+     *
+     * @param array
+     *
+     * @return string
+     */
+    public function get_page_view_wide(array $args)
+    {
+        return '';
+    }
+
+    /**
+     * The match string should be at the root of the prefix
+     *
+     * @routename Page Index Root
+     * @maxparam  0
+     *
+     * @param array
+     *
+     * @return string
+     */
+    public function get_(array $args)
+    {
+        return '';
+    }
+
+    /**
      * See if the HTTP method is properly parsed
      *
      * @param array
