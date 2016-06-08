@@ -71,4 +71,49 @@ class Bank
 
         return null;
     }
+
+    /**
+     * List out all the routes for diagnostic purposes in HTML format
+     *
+     * @return string
+     */
+    public static function dumpHTML()
+    {
+        $out = <<<HTML
+<table>
+    <thead>
+        <tr>
+            <td>Route Name</td>
+            <td>HTTP Method</td>
+            <td>Match String</td>
+            <td>Action</td>
+        </tr>
+    </thead>
+    <tbody>
+
+HTML;
+
+        foreach ( self::$routes as $route )
+        {
+            $actionCel = implode('<br>', $route->getActions() );
+
+            $out .= <<<HTML
+        <tr>
+            <td>{$route->getName()}</td>
+            <td>{$route->getHttpMethod()}</td>
+            <td>{$route->getMatchString()}</td>
+            <td>{$actionCel}</td>
+        </tr>
+        
+HTML;
+        }
+
+        $out .= <<<HTML
+    </tbody>
+</table>
+
+HTML;
+
+        return $out;
+    }
 }
