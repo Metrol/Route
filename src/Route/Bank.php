@@ -123,7 +123,7 @@ HTML;
             <td>{$paramCell}</td>
             <td>{$actionCell}</td>
         </tr>
-        
+
 HTML;
         }
 
