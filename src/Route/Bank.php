@@ -95,14 +95,22 @@ HTML;
 
         foreach ( self::$routes as $route )
         {
-            $actionCel = implode('<br>', $route->getActions() );
+            $actionList = [];
+
+            foreach ( $route->getActions() as $action )
+            {
+                $actionList[] = $action->getControllerClass().':'.
+                    $action->getControllerMethod();
+            }
+
+            $actionCell = implode('<br>', $actionList);
 
             $out .= <<<HTML
         <tr>
             <td>{$route->getName()}</td>
             <td>{$route->getHttpMethod()}</td>
             <td>{$route->getMatchString()}</td>
-            <td>{$actionCel}</td>
+            <td>{$actionCell}</td>
         </tr>
         
 HTML;
