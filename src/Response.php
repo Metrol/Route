@@ -36,9 +36,6 @@ class Response
      */
     protected $out;
 
-
-
-
     /**
      * Initializes the response object
      *
@@ -46,6 +43,5 @@ class Response
     public function __construct()
     {
         $this->out = '';
-
     }
 }
