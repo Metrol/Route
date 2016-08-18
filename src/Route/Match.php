@@ -490,7 +490,7 @@ class Match
 
         foreach ( $uriParts as $uriSegment )
         {
-            if ( !empty($uriSegment) )
+            if ( $uriSegment != '' )
             {
                 $uriSegments[] = $uriSegment;
             }
