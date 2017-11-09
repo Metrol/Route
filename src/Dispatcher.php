@@ -55,6 +55,13 @@ class Dispatcher
     protected $arguments = [];
 
     /**
+     * The route that was located during run(), if any
+     *
+     * @var Route|null
+     */
+    protected $foundRoute = null;
+
+    /**
      * Takes in and saves the Route that will be loaded up along with the
      * Request that came across.
      *
@@ -78,16 +85,38 @@ class Dispatcher
         if ( $route == null )
         {
             $this->routeStatus = self::ROUTE_NOT_FOUND;
+            $this->foundRoute  = null;
 
             return $this;
         }
 
-        $this->actions   = $route->getActions();
-        $this->arguments = $route->getArguments();
+        $this->foundRoute = $route;
+        $this->actions    = $route->getActions();
+        $this->arguments  = $route->getArguments();
 
         $this->verifyActions();
 
         return $this;
+    }
+
+    /**
+     * Provide the route that was found, or null if nothing found yet.
+     *
+     * @return Route|null
+     */
+    public function getFoundRoute()
+    {
+        return $this->foundRoute;
+    }
+
+    /**
+     * Provide the list of arguments found in the URL
+     *
+     * @return array
+     */
+    public function getArguments()
+    {
+        return $this->arguments;
     }
 
     /**
