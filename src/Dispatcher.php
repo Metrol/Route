@@ -94,6 +94,12 @@ class Dispatcher
         $this->actions    = $route->getActions();
         $this->arguments  = $route->getArguments();
 
+        if ( !empty($this->arguments) )
+        {
+            // Push the found arguments back into the Request Assigned values
+            $this->request->assigned()->addValues($this->arguments);
+        }
+
         $this->verifyActions();
 
         return $this;

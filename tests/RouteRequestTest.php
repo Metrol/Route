@@ -6,7 +6,6 @@
  * @copyright (c) 2016, Michael Collette
  */
 
-use \Metrol\Route;
 use \Metrol\Route\Request;
 
 /**
