@@ -10,6 +10,8 @@ namespace Metrol\Route\Load;
 use Metrol\Route;
 use Metrol\Route\Bank;
 use Metrol\Route\Action;
+use ReflectionMethod;
+use ReflectionObject;
 
 /**
  * Parses the method names and phpDoc blocks for route information to create
@@ -86,7 +88,7 @@ class Controller
      *
      * @return $this
      */
-    public function setControllerName($name)
+    public function setControllerName($name): Controller
     {
         $this->controllerName = $name;
 
@@ -98,7 +100,7 @@ class Controller
      * already been checked before this is even attempted.
      *
      */
-    public function run()
+    public function run(): void
     {
         $this->buildRoutes();
     }
@@ -108,20 +110,20 @@ class Controller
      * routes to the Bank to be looked up later.
      *
      */
-    private function buildRoutes()
+    private function buildRoutes(): void
     {
         $controller = new $this->controllerName();
 
-        $refl = new \ReflectionObject($controller);
+        $refl = new ReflectionObject($controller);
 
-        $methods = $refl->getMethods(\ReflectionMethod::IS_PUBLIC);
+        $methods = $refl->getMethods(ReflectionMethod::IS_PUBLIC);
 
         foreach ( $methods as $method )
         {
             if ( !$this->isMethodARoute($method) )
             {
                 continue;
-            };
+            }
 
             $attribs = $this->parseDocBlockForAttributes($method->getDocComment());
 
@@ -138,12 +140,12 @@ class Controller
     /**
      * Create the route to be added into the bank
      *
-     * @param \ReflectionMethod $method
+     * @param ReflectionMethod $method
      * @param array             $attribs
      *
      * @return Route
      */
-    private function createRoute(\ReflectionMethod $method, array $attribs)
+    private function createRoute(ReflectionMethod $method, array $attribs): Route
     {
         if ( isset($attribs[self::ATTR_NAME]) )
         {
@@ -154,19 +156,17 @@ class Controller
             $routeName = $this->controllerName . ':' . $method->getName();
         }
 
-        $route = new Route($routeName);
-
-        return $route;
+        return new Route($routeName);
     }
 
     /**
      * Checks the provided method to see if it should be used as a route.
      *
-     * @param \ReflectionMethod $method
+     * @param ReflectionMethod $method
      *
      * @return boolean
      */
-    private function isMethodARoute(\ReflectionMethod $method)
+    private function isMethodARoute(ReflectionMethod $method): bool
     {
         $methodName = $method->getName();
 
@@ -193,14 +193,15 @@ class Controller
     }
 
     /**
+     * Set the match string for the router to look for
      *
      * @param Route             $route
-     * @param \ReflectionObject $reflCont
-     * @param \ReflectionMethod $method
+     * @param ReflectionObject  $reflCont
+     * @param ReflectionMethod  $method
      * @param array             $attribs
      */
-    private function setMatch(Route $route,\ReflectionObject $reflCont,
-                              \ReflectionMethod $method, array $attribs)
+    private function setMatch(Route $route, ReflectionObject $reflCont,
+                              ReflectionMethod $method, array $attribs): void
     {
         if ( isset($attribs[self::ATTR_MATCH]) )
         {
@@ -244,9 +245,9 @@ class Controller
      * Sets the HTTP method for the action
      *
      * @param Route             $route
-     * @param \ReflectionMethod $method
+     * @param ReflectionMethod $method
      */
-    private function setMethod(Route $route, \ReflectionMethod $method)
+    private function setMethod(Route $route, ReflectionMethod $method): void
     {
         $mName = $method->getName();
 
@@ -261,9 +262,9 @@ class Controller
      * the route.
      *
      * @param Route  $route
-     * @param \ReflectionMethod $method
+     * @param ReflectionMethod $method
      */
-    private function setAction(Route $route, \ReflectionMethod $method)
+    private function setAction(Route $route, ReflectionMethod $method): void
     {
         $action = new Action;
         $action->setControllerClass($this->controllerName);
@@ -278,11 +279,15 @@ class Controller
      * @param Route $route
      * @param array $attribs
      */
-    private function setParams(Route $route, array $attribs)
+    private function setParams(Route $route, array $attribs): void
     {
         if ( isset($attribs[self::ATTR_MAX_PARAM]) )
         {
             $route->setMaxParameters( $attribs[self::ATTR_MAX_PARAM] );
+        }
+        else
+        {
+            $route->setMaxParameters(0);
         }
     }
 
@@ -294,7 +299,7 @@ class Controller
      *
      * @return array Documentation attributes
      */
-    private function parseDocBlockForAttributes($docBlock)
+    private function parseDocBlockForAttributes($docBlock): array
     {
         $rtn = array();
 
