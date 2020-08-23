@@ -21,7 +21,7 @@ class Bank
      *
      * @var Metrol\Route[]
      */
-    private static $routes = array();
+    private static $routes = [];
 
     /**
      * Make a route deposit to the bank
@@ -40,7 +40,7 @@ class Bank
      *
      * @return Metrol\Route|null
      */
-    public static function getNamedRoute($routeName)
+    public static function getNamedRoute(string $routeName): ?Metrol\Route
     {
         if ( isset(self::$routes[ $routeName ]) )
         {
@@ -73,11 +73,49 @@ class Bank
     }
 
     /**
+     * Dump the routes into an array
+     *
+     * @return array
+     */
+    public static function dump(): array
+    {
+        $rtn = [];
+
+        foreach ( array_reverse(self::$routes) as $route )
+        {
+            $actionList = [];
+
+            foreach ( $route->getActions() as $action )
+            {
+                $actionList[] = $action->getControllerClass().':'.
+                    $action->getControllerMethod();
+            }
+
+            $params = $route->getMaxParameters();
+
+            if ( $params === null )
+            {
+                $params = 'null';
+            }
+
+            $rtn[] = [
+                'routeName' => $route->getName(),
+                'method'    => $route->getHttpMethod(),
+                'match'     => $route->getMatchString(),
+                'params'    => $params,
+                'actions'   => $actionList
+            ];
+        }
+
+        return $rtn;
+    }
+
+    /**
      * List out all the routes for diagnostic purposes in HTML format
      *
      * @return string
      */
-    public static function dumpHTML()
+    public static function dumpHTML(): string
     {
         $out = <<<HTML
 <table>
