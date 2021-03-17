@@ -61,7 +61,7 @@ class Bank
     {
         foreach ( array_reverse(self::$routes) as $route )
         {
-            $matched = Metrol\Route\Match::check($request, $route);
+            $matched = Metrol\Route\MatchRoute::check($request, $route);
 
             if ( $matched )
             {

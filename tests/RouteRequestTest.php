@@ -6,6 +6,7 @@
  * @copyright (c) 2016, Michael Collette
  */
 
+use PHPUnit\Framework\TestCase;
 use \Metrol\Route\Request;
 
 /**
@@ -13,7 +14,7 @@ use \Metrol\Route\Request;
  * it should be doing.
  *
  */
-class RouteRequestTest extends \PHPUnit_Framework_TestCase
+class RouteRequestTest extends TestCase
 {
     /**
      * Make sure the URI setter works properly, and strips off any GET arguments

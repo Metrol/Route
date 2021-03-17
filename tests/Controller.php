@@ -25,7 +25,7 @@ class Controller
      *
      * @return string
      */
-    public function get_view(array $args)
+    public function get_view(array $args): string
     {
         return '';
     }
@@ -41,7 +41,7 @@ class Controller
      *
      * @return string
      */
-    public function get_pageview(array $args)
+    public function get_pageview(array $args): string
     {
         return '';
     }
@@ -57,7 +57,7 @@ class Controller
      *
      * @return string
      */
-    public function get_page_view_wide(array $args)
+    public function get_page_view_wide(array $args): string
     {
         return '';
     }
@@ -72,7 +72,7 @@ class Controller
      *
      * @return string
      */
-    public function get_(array $args)
+    public function get_(array $args): string
     {
         return '';
     }
@@ -84,7 +84,7 @@ class Controller
      *
      * @return string
      */
-    public function post_updatestuff(array $args)
+    public function post_updatestuff(array $args): string
     {
         return '';
     }
@@ -96,7 +96,7 @@ class Controller
      *
      * @return string
      */
-    private function get_nothing(array $args)
+    private function get_nothing(array $args): string
     {
         return '';
     }
@@ -110,7 +110,7 @@ class Controller
      *
      * @return string
      */
-    public function notARoute(array $args)
+    public function notARoute(array $args): string
     {
 
     }

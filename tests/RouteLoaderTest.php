@@ -6,7 +6,7 @@
  * @copyright (c) 2016, Michael Collette
  */
 
-use \Metrol\Route;
+use PHPUnit\Framework\TestCase;
 use \Metrol\Route\Load;
 use \Metrol\Route\Bank;
 
@@ -17,7 +17,7 @@ require 'Controller.php';
  * library
  *
  */
-class RouteLoaderTest extends \PHPUnit_Framework_TestCase
+class RouteLoaderTest extends TestCase
 {
     /**
      * Configuration coming from an INI file
@@ -84,7 +84,7 @@ class RouteLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('\Controller:get_view', $route->getName());
         $this->assertEquals('/tester/view/', $route->getMatchString());
         $this->assertEquals('GET', $route->getHttpMethod());
-        $this->assertNull($route->getMaxParameters());
+        $this->assertEquals(0, $route->getMaxParameters());
 
         // Verify a route with a different HTTP method
         $route = Bank::getNamedRoute('\Controller:post_updatestuff');

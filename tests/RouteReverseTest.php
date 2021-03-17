@@ -6,15 +6,16 @@
  * @copyright (c) 2016, Michael Collette
  */
 
+use PHPUnit\Framework\TestCase;
 use \Metrol\Route;
 use \Metrol\Route\Reverse;
 
 /**
- * Verfies the ability of the Route\Reverse object to produce a correct URL
+ * Verifies the ability of the Route\Reverse object to produce a correct URL
  * from the Route information and supplied arguments
  *
  */
-class RouteReverseTest extends \PHPUnit_Framework_TestCase
+class RouteReverseTest extends TestCase
 {
     /**
      * Create a test route, get a reversal on it to produce a URL

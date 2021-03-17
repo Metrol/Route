@@ -6,14 +6,14 @@
  * @copyright (c) 2016, Michael Collette
  */
 
-use \Metrol\Route;
-use \Metrol\Route\Action;
+use PHPUnit\Framework\TestCase;
+use Metrol\Route\Action;
 
 /**
  * A little dedicated testing for the Action object
  *
  */
-class RouteActionTest extends \PHPUnit_Framework_TestCase
+class RouteActionTest extends TestCase
 {
     /**
      * Test that an action can be properly passed into the constructor

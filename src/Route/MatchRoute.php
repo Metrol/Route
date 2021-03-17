@@ -13,12 +13,12 @@ use Metrol;
  * Contains the logic for comparing a route to a request to see if it matches.
  *
  */
-class Match
+class MatchRoute
 {
     /**
      * Instance of this object
      *
-     * @var Match
+     * @var MatchRoute
      */
     private static $instance = null;
 
@@ -502,13 +502,13 @@ class Match
     /**
      * Get a single instance of this object for internal use
      *
-     * @return Metrol\Route\Match
+     * @return Metrol\Route\MatchRoute
      */
     private static function getInstance()
     {
         if ( static::$instance === null )
         {
-            static::$instance = new Match;
+            static::$instance = new MatchRoute;
             static::$noMatchReason = '';
         }
 

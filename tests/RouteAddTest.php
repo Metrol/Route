@@ -6,17 +6,18 @@
  * @copyright (c) 2016, Michael Collette
  */
 
-use \Metrol\Route;
-use \Metrol\Route\Action;
-use \Metrol\Route\Match;
-use \Metrol\Route\Request;
+use PHPUnit\Framework\TestCase;
+use Metrol\Route;
+use Metrol\Route\Action;
+use Metrol\Route\MatchRoute;
+use Metrol\Route\Request;
 
 /**
  * Insure that routes can be created, given information, and have be able to
  * get that information back.
  *
  */
-class RouteAddTest extends \PHPUnit_Framework_TestCase
+class RouteAddTest extends TestCase
 {
     /**
      * Add some routes, see what all happens...
@@ -57,11 +58,11 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
         $request->setUri('/imaroute/');
         $request->setHttpMethod('GET');
 
-        $match = Match::check($request, $route);
+        $match = MatchRoute::check($request, $route);
         $this->assertTrue($match);
 
         $request->setUri('/notaroute/');
-        $match = Match::check($request, $route);
+        $match = MatchRoute::check($request, $route);
         $this->assertFalse($match);
     }
 
@@ -79,12 +80,12 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
         $request->setUri('/view/1234/');
         $request->setHttpMethod('GET');
 
-        $match = Match::check($request, $route);
+        $match = MatchRoute::check($request, $route);
 
         $this->assertTrue($match);
 
         $request->setUri('/view/Nope/');
-        $match = Match::check($request, $route);
+        $match = MatchRoute::check($request, $route);
 
         $this->assertFalse($match);
     }
@@ -105,7 +106,7 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
         // Should match a real integer in the 2nd segment
         $request->setUri('/view/1234/');
 
-        $match = Match::check($request, $route);
+        $match = MatchRoute::check($request, $route);
         $this->assertTrue($match);
 
         // The found arguments should have been applied to the route
@@ -114,13 +115,13 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
 
         // Should not match a floating point
         $request->setUri('/view/12.34/');
-        $match = Match::check($request, $route);
+        $match = MatchRoute::check($request, $route);
 
         $this->assertFalse($match);
 
         // Should not match a string
         $request->setUri('/view/Nope/');
-        $match = Match::check($request, $route);
+        $match = MatchRoute::check($request, $route);
 
         $this->assertFalse($match);
     }
@@ -137,7 +138,7 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
             ->setUri('/view/1234/abcd/xyz/')
             ->setHttpMethod('GET');
 
-        $match = Match::check($request, $route);
+        $match = MatchRoute::check($request, $route);
         $args  = $route->getArguments();
 
         $this->assertTrue($match);
@@ -147,18 +148,18 @@ class RouteAddTest extends \PHPUnit_Framework_TestCase
 
         // Now set a max parameter value to make sure we don't get false hits
         $route->setMaxParameters(1);
-        $match = Match::check($request, $route);
+        $match = MatchRoute::check($request, $route);
 
         $this->assertFalse($match);
 
         $route->setMaxParameters(2);
-        $match = Match::check($request, $route);
+        $match = MatchRoute::check($request, $route);
         $this->assertTrue($match);
     }
 
     /**
      * Make a run on the bank for a couple of routes to see if deposits and
-     * withdrawls are working.
+     * withdrawals are working.
      *
      */
     public function testRouteBank()
