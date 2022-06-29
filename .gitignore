@@ -1,5 +1,3 @@
-bin/
-etc/
 .idea/
 vendor/
 composer.lock
