@@ -6,9 +6,11 @@
  * @copyright (c) 2016, Michael Collette
  */
 
+namespace Metrol\Tests;
+
 use PHPUnit\Framework\TestCase;
-use \Metrol\Route;
-use \Metrol\Route\Reverse;
+use Metrol\Route;
+use Metrol\Route\Reverse;
 
 /**
  * Verifies the ability of the Route\Reverse object to produce a correct URL

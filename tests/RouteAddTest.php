@@ -6,6 +6,8 @@
  * @copyright (c) 2016, Michael Collette
  */
 
+namespace Metrol\Tests;
+
 use PHPUnit\Framework\TestCase;
 use Metrol\Route;
 use Metrol\Route\Action;
@@ -13,7 +15,7 @@ use Metrol\Route\MatchRoute;
 use Metrol\Route\Request;
 
 /**
- * Insure that routes can be created, given information, and have be able to
+ *EInsure that routes can be created, given information, and have be able to
  * get that information back.
  *
  */

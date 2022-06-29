@@ -6,9 +6,11 @@
  * @copyright (c) 2016, Michael Collette
  */
 
+namespace Metrol\Tests;
+
 use PHPUnit\Framework\TestCase;
-use \Metrol\Route\Load;
-use \Metrol\Route\Bank;
+use Metrol\Route\Load;
+use Metrol\Route\Bank;
 
 require 'Controller.php';
 
