@@ -11,7 +11,8 @@ use Metrol\Route;
 use Metrol\Route\Bank;
 use Metrol\Route\Action;
 use ReflectionMethod;
-use ReflectionObject;
+use ReflectionClass;
+use ReflectionException;
 
 /**
  * Parses the method names and phpDoc blocks for route information to create
@@ -23,7 +24,6 @@ class Controller
     /**
      * Method prefixes that indicate what HTTP method should be matched.
      *
-     * @const
      */
     const METHOD_GET    = 'get_';
     const METHOD_POST   = 'post_';
@@ -31,8 +31,8 @@ class Controller
     const METHOD_PUT    = 'put_';
 
     /**
+     * Doc block flags to look for
      *
-     * @const
      */
     const ATTR_MATCH     = '@match';
     const ATTR_NAME      = '@routename';
@@ -41,23 +41,20 @@ class Controller
     /**
      * The controller class name in question
      *
-     * @var string
      */
-    private $controllerName;
+    private string $controllerName;
 
     /**
      * Method prefixes to look for when parsing the controller class.
      *
-     * @var array
      */
-    private $methodPrefixes;
+    private array $methodPrefixes;
 
     /**
      * A list of docBlock attributes to look for when parsing the class
      *
-     * @var array
      */
-    private $attributes;
+    private array $attributes;
 
     /**
      * Initialize the object
@@ -84,11 +81,8 @@ class Controller
     /**
      * The fully qualified controller name that should be looked at.
      *
-     * @param string
-     *
-     * @return $this
      */
-    public function setControllerName($name): Controller
+    public function setControllerName(string $name): static
     {
         $this->controllerName = $name;
 
@@ -112,11 +106,19 @@ class Controller
      */
     private function buildRoutes(): void
     {
-        $controller = new $this->controllerName();
+        try
+        {
+            $reflect = new ReflectionClass($this->controllerName);
+        }
+        catch ( ReflectionException )
+        {
+            echo 'Unable to find controller specified: ', $this->controllerName;
+            echo PHP_EOL, 'Exiting....';
 
-        $refl = new ReflectionObject($controller);
+            exit;
+        }
 
-        $methods = $refl->getMethods(ReflectionMethod::IS_PUBLIC);
+        $methods = $reflect->getMethods(ReflectionMethod::IS_PUBLIC);
 
         foreach ( $methods as $method )
         {
@@ -128,7 +130,7 @@ class Controller
             $attribs = $this->parseDocBlockForAttributes($method->getDocComment());
 
             $route = $this->createRoute($method, $attribs);
-            $this->setMatch($route, $refl, $method, $attribs);
+            $this->setMatch($route, $reflect, $method, $attribs);
             $this->setMethod($route, $method);
             $this->setAction($route, $method);
             $this->setParams($route, $attribs);
@@ -140,10 +142,6 @@ class Controller
     /**
      * Create the route to be added into the bank
      *
-     * @param ReflectionMethod $method
-     * @param array             $attribs
-     *
-     * @return Route
      */
     private function createRoute(ReflectionMethod $method, array $attribs): Route
     {
@@ -162,9 +160,6 @@ class Controller
     /**
      * Checks the provided method to see if it should be used as a route.
      *
-     * @param ReflectionMethod $method
-     *
-     * @return boolean
      */
     private function isMethodARoute(ReflectionMethod $method): bool
     {
@@ -195,13 +190,11 @@ class Controller
     /**
      * Set the match string for the router to look for
      *
-     * @param Route             $route
-     * @param ReflectionObject  $reflCont
-     * @param ReflectionMethod  $method
-     * @param array             $attribs
      */
-    private function setMatch(Route $route, ReflectionObject $reflCont,
-                              ReflectionMethod $method, array $attribs): void
+    private function setMatch(Route $route,
+                              ReflectionClass $reflCont,
+                              ReflectionMethod $method,
+                              array $attribs): void
     {
         if ( isset($attribs[self::ATTR_MATCH]) )
         {
@@ -232,7 +225,7 @@ class Controller
                 $match       = $matchPre . $methodMatch;
             }
 
-            if ( substr($match, -1) != '/' )
+            if ( ! str_ends_with($match, '/') )
             {
                 $match .=  '/';
             }
@@ -244,8 +237,6 @@ class Controller
     /**
      * Sets the HTTP method for the action
      *
-     * @param Route             $route
-     * @param ReflectionMethod $method
      */
     private function setMethod(Route $route, ReflectionMethod $method): void
     {
@@ -261,8 +252,6 @@ class Controller
      * Based on the controller name and specified method, add an action for
      * the route.
      *
-     * @param Route  $route
-     * @param ReflectionMethod $method
      */
     private function setAction(Route $route, ReflectionMethod $method): void
     {
@@ -276,8 +265,6 @@ class Controller
     /**
      * Sets the maximum parameters to the route if specified in the attributes.
      *
-     * @param Route $route
-     * @param array $attribs
      */
     private function setParams(Route $route, array $attribs): void
     {
@@ -295,16 +282,13 @@ class Controller
      * Parse through the provided docBlock text looking for attributes that can
      * be passed to a route.
      *
-     * @param string $docBlock
-     *
-     * @return array Documentation attributes
      */
-    private function parseDocBlockForAttributes($docBlock): array
+    private function parseDocBlockForAttributes(string $docBlock): array
     {
         $rtn = array();
 
         // See that we've got some kind of attributes before going any further
-        if ( strpos($docBlock, '* @') === false )
+        if ( ! str_contains($docBlock, '* @') )
         {
             return $rtn;
         }
@@ -317,7 +301,7 @@ class Controller
 
             foreach ( $this->attributes as $attrib )
             {
-                if ( strpos($docLine, $attrib) !== false )
+                if ( str_contains($docLine, $attrib) )
                 {
                     $value = substr($docLine, strlen($attrib) + 1 );
 
