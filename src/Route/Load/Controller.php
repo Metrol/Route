@@ -285,7 +285,7 @@ class Controller
      */
     private function parseDocBlockForAttributes(string $docBlock): array
     {
-        $rtn = array();
+        $rtn = [];
 
         // See that we've got some kind of attributes before going any further
         if ( ! str_contains($docBlock, '* @') )

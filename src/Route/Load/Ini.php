@@ -173,7 +173,7 @@ class Ini
         }
         else
         {
-            $actions = array( $routeInfo[self::KEY_ACTION] );
+            $actions = [$routeInfo[ self::KEY_ACTION]];
         }
 
         foreach ( $actions as $actionString )
