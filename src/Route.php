@@ -3,7 +3,7 @@
  * @author        "Michael Collette" <metrol@metrol.net>
  * @package       Metrol/Route
  * @version       1.0
- * @copyright (c) 2016, Michael Collette
+ * @copyright (c) 2022, Michael Collette
  */
 
 namespace Metrol;
@@ -15,77 +15,80 @@ namespace Metrol;
 class Route
 {
     /**
-     * GET should be used for a request to read data
-     *
-     * @const string
-     */
-    const HTTP_GET = 'GET';
-
-    /**
-     * POST should be used to create a new record
-     *
-     * @const string
-     */
-    const HTTP_POST = 'POST';
-
-    /**
-     * PUT is to Update or Replace information
-     *
-     * @const string
-     */
-    const HTTP_PUT = 'PUT';
-
-    /**
-     * DELETE requests information be removed
-     *
-     * @const string
-     */
-    const HTTP_DELETE = 'DELETE';
-
-    /**
      * Hints to look for in the match string
      *
-     * @const string
      */
     const HINT_INTEGER = ':int';
     const HINT_NUMBER  = ':num';
     const HINT_STRING  = ':str';
 
     /**
+     * GET should be used for a request to read data
+     *
+     */
+    const HTTP_GET = 'GET';
+
+    /**
+     * POST should be used to create a new record
+     *
+     */
+    const HTTP_POST = 'POST';
+
+    /**
+     * PUT is to Update or Replace information
+     *
+     */
+    const HTTP_PUT = 'PUT';
+
+    /**
+     * DELETE requests information be removed
+     *
+     */
+    const HTTP_DELETE = 'DELETE';
+
+    /**
+     * List of all the allowed methods that can be processed here
+     *
+     */
+    static private array $allowedMethods = [
+       self::HTTP_GET,
+       self::HTTP_POST,
+       self::HTTP_PUT,
+       self::HTTP_DELETE
+    ];
+
+
+    /**
      * The name of this route.
      *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * List of actions associated with this route
      *
      * @var Route\Action[]
      */
-    protected $actions;
+    protected array $actions = [];
 
     /**
      * The string that will be compared against the incoming URI for a match
      *
-     * @var string
      */
-    protected $match;
+    protected string $match = '';
 
     /**
      * The HTTP method used for this request
      *
-     * @var string
      */
-    protected $httpMethod;
+    protected string $httpMethod = self::HTTP_GET;
 
     /**
      * Defines how many segments after the last filter segment will be allowed
      * as arguments to the action.
      *
-     * @var integer
      */
-    protected $maxParams;
+    protected int $maxParams = 0;
 
     /**
      * When checking if this route matches, any arguments found in the URI
@@ -93,30 +96,23 @@ class Route
      *
      * @var array
      */
-    protected $foundArguments;
+    protected array $foundArguments = [];
 
     /**
      * Initializes the Route object
      *
      * @param string $routeName Name of this route
      */
-    public function __construct($routeName)
+    public function __construct(string $routeName)
     {
         $this->name = $routeName;
-
-        $this->match          = '';
-        $this->actions        = array();
-        $this->httpMethod     = self::HTTP_GET;
-        $this->maxParams      = null;
-        $this->foundArguments = array();
     }
 
     /**
      * Provides the assigned name of the route
      *
-     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -124,9 +120,8 @@ class Route
     /**
      * Provide the Route Reversal object for this route to produce a URL
      *
-     * @return Route\Reverse
      */
-    public function getReverse()
+    public function getReverse(): Route\Reverse
     {
         return new Route\Reverse($this);
     }
@@ -134,11 +129,8 @@ class Route
     /**
      * Add a new Action to the route
      *
-     * @param Route\Action $action
-     *
-     * @return $this
      */
-    public function addAction(Route\Action $action)
+    public function addAction(Route\Action $action): static
     {
         $this->actions[] = $action;
 
@@ -148,20 +140,16 @@ class Route
     /**
      * Provide the list of actions assigned to this route
      *
-     * @return Route\Action[]
      */
-    public function getActions()
+    public function getActions(): array
     {
         return $this->actions;
     }
     /**
      * Sets the URI filtering string
      *
-     * @param string
-     *
-     * @return $this
      */
-    public function setMatchString($match)
+    public function setMatchString(string $match): static
     {
         $this->match = $match;
 
@@ -171,44 +159,23 @@ class Route
     /**
      * Provide the match string that will be looked for.
      *
-     * @return string
      */
-    public function getMatchString()
+    public function getMatchString(): string
     {
         return $this->match;
     }
 
     /**
-     * Sets the HTTP request method
+     * Sets the HTTP request method.
      *
-     * @param string $method
-     *
-     * @return $this
      */
-    public function setHttpMethod($method)
+    public function setHttpMethod(string $method): static
     {
         $method = strtoupper($method);
 
-        switch ( $method )
+        if ( in_array($method, self::$allowedMethods) )
         {
-            case self::HTTP_GET:
-                $this->httpMethod = $method;
-                break;
-
-            case self::HTTP_POST:
-                $this->httpMethod = $method;
-                break;
-
-            case self::HTTP_PUT:
-                $this->httpMethod = $method;
-                break;
-
-            case self::HTTP_DELETE:
-                $this->httpMethod = $method;
-                break;
-
-            default:
-                $this->httpMethod = self::HTTP_GET;
+            $this->httpMethod = $method;
         }
 
         return $this;
@@ -217,9 +184,8 @@ class Route
     /**
      * Provide the HTTP method this route is for
      *
-     * @return string
      */
-    public function getHttpMethod()
+    public function getHttpMethod(): string
     {
         return $this->httpMethod;
     }
@@ -228,15 +194,10 @@ class Route
      * Sets the maximum number of segments following the match filter that will
      * be allowed to exist when matching.
      *
-     * Setting to null will allow for any number of parameters
-     *
-     * @param integer|null $maxParameters
-     *
-     * @return $this
      */
-    public function setMaxParameters($maxParameters = null)
+    public function setMaxParameters(int $maxParameters): static
     {
-        $this->maxParams = intval($maxParameters);
+        $this->maxParams = $maxParameters;
 
         return $this;
     }
@@ -244,9 +205,8 @@ class Route
     /**
      * Provide the maximum parameters this route is looking for
      *
-     * @return integer
      */
-    public function getMaxParameters()
+    public function getMaxParameters(): int
     {
         return $this->maxParams;
     }
@@ -254,11 +214,8 @@ class Route
     /**
      * Set the arguments found in the URI for a matching route
      *
-     * @param array $arguments
-     *
-     * @return $this
      */
-    public function setArguments(array $arguments)
+    public function setArguments(array $arguments): static
     {
         $this->foundArguments = $arguments;
 
@@ -268,9 +225,8 @@ class Route
     /**
      * Get the arguments found in the URI for a matching route
      *
-     * @return array
      */
-    public function getArguments()
+    public function getArguments(): array
     {
         return $this->foundArguments;
     }

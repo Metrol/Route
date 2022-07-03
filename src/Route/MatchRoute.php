@@ -3,10 +3,11 @@
  * @author        "Michael Collette" <metrol@metrol.net>
  * @package       Metrol/Route
  * @version       1.0
- * @copyright (c) 2016, Michael Collette
+ * @copyright (c) 2022, Michael Collette
  */
 
 namespace Metrol\Route;
+
 use Metrol;
 
 /**
@@ -18,30 +19,26 @@ class MatchRoute
     /**
      * Instance of this object
      *
-     * @var MatchRoute
      */
-    private static $instance = null;
+    private static ?MatchRoute $instance;
 
     /**
      * The route that needs to be compared
      *
-     * @var Metrol\Route
      */
-    private $route;
+    private Metrol\Route $route;
 
     /**
      * HTTP Request coming through
      *
-     * @var Metrol\Route\Request
      */
-    private $request;
+    private Request $request;
 
     /**
      * Found Arguments
      *
-     * @var array
      */
-    private $args;
+    private array $args;
 
     /**
      * For testing purposes, records which step in the process decided that the
@@ -50,7 +47,7 @@ class MatchRoute
      *
      * @var string
      */
-    public static $noMatchReason = '';
+    public static string $noMatchReason = '';
 
     /**
      * Private constructor, need to use static methods instead.
@@ -65,12 +62,8 @@ class MatchRoute
      * Run the comparison on the route versus the request.  Will return true on
      * a match, and will populate the arguments of the route if any are found.
      *
-     * @param Metrol\Route\Request $request
-     * @param Metrol\Route   $route
-     *
-     * @return boolean True on match, false if no match.
      */
-    public static function check(Metrol\Route\Request $request, Metrol\Route $route)
+    public static function check(Metrol\Route\Request $request, Metrol\Route $route): bool
     {
         $inst = static::getInstance();
 
@@ -90,9 +83,8 @@ class MatchRoute
      * methods.  If this does match, the found arguments will be passed back to
      * the route.
      *
-     * @return boolean
      */
-    private function run()
+    private function run(): bool
     {
         if ( !$this->checkBasics() )
         {
@@ -113,12 +105,11 @@ class MatchRoute
     }
 
     /**
-     * Check out some of the easy stuff, like http method and the segment count
+     * Check out the easy stuff, like http method and the segment count
      * to see if we can get out of here early.
      *
-     * @return boolean
      */
-    private function checkBasics()
+    private function checkBasics(): bool
     {
         $req = $this->request;
         $rt  = $this->route;
@@ -139,7 +130,7 @@ class MatchRoute
 
         // There had best be a slash somewhere in the URI.
         //
-        if ( strpos($req->getUri(), '/') === false )
+        if ( !str_contains($req->getUri(), '/') )
         {
             self::$noMatchReason = 'No slashes in the requested URI';
             return false;
@@ -149,12 +140,11 @@ class MatchRoute
     }
 
     /**
-     * Walk through the segments of the URI to see if there's the proper number
+     * Walk through the segments of the URI to see if there's the proper number,
      * and they match the pattern in the route match string
      *
-     * @return boolean
      */
-    private function checkSegments()
+    private function checkSegments(): bool
     {
         $req = $this->request;
         $rt  = $this->route;
@@ -215,13 +205,13 @@ class MatchRoute
      *
      * @return boolean TRUE if all matched
      */
-    private function matchSegments(array $reqSegments, array $rtSegments)
+    private function matchSegments(array $reqSegments, array $rtSegments): bool
     {
         foreach ( $rtSegments as $segIdx => $rtSegment )
         {
-            if ( strpos($rtSegment, ':') !== false )
+            if ( str_contains($rtSegment, ':') )
             {
-                if ( $this->hintMatch($reqSegments[$segIdx], $rtSegment) == false )
+                if ( ! $this->hintMatch($reqSegments[ $segIdx ], $rtSegment) )
                 {
                     return false;
                 }
@@ -248,7 +238,7 @@ class MatchRoute
      * @param string[] $reqSegments
      * @param string[] $rtSegments
      */
-    private function appendExtraSegments(array $reqSegments, array $rtSegments)
+    private function appendExtraSegments(array $reqSegments, array $rtSegments): void
     {
         $reqCount = count($reqSegments);
         $rtCount  = count($rtSegments);
@@ -272,7 +262,7 @@ class MatchRoute
      *
      * @return boolean
      */
-    protected function literalMatch($reqSegment, $rtSegment)
+    protected function literalMatch(string $reqSegment, string $rtSegment): bool
     {
         $rtn = false;
 
@@ -298,7 +288,7 @@ class MatchRoute
      *
      * @return boolean
      */
-    protected function hintMatch($reqSegment, $rtSegment)
+    protected function hintMatch(string $reqSegment, string $rtSegment): bool
     {
         switch ( substr($rtSegment, 0, 4) )
         {
@@ -334,11 +324,12 @@ class MatchRoute
      *
      * @return boolean
      */
-    protected function compareNumber($reqSegment, $rtSegment)
+    protected function compareNumber(string $reqSegment, string $rtSegment): bool
     {
         if ( !is_numeric($reqSegment) )
         {
             static::$noMatchReason = 'Number hinted segment not numeric';
+
             return false;
         }
 
@@ -352,11 +343,11 @@ class MatchRoute
 
         $specSect = substr($rtSegment, 4);
 
-        if ( substr($specSect, 0, 1) == '[' and substr($specSect, -1) == ']' )
+        if ( str_starts_with($specSect, '[') and str_ends_with($specSect, ']') )
         {
             $specs = substr($specSect, 1, -1);
 
-            if ( strpos($specs, '-') === false )
+            if ( ! str_contains($specs, '-') )
             {
                 if ( $reqSegment == $specs )
                 {
@@ -398,9 +389,9 @@ class MatchRoute
      *
      * @return boolean
      */
-    protected function compareInteger($reqSegment, $rtSegment)
+    protected function compareInteger(string $reqSegment, string $rtSegment): bool
     {
-        if ( !is_numeric($reqSegment) )
+        if ( ! is_numeric($reqSegment) )
         {
             return false;
         }
@@ -421,7 +412,7 @@ class MatchRoute
      *
      * @return boolean
      */
-    protected function compareString($reqSegment, $rtSegment)
+    protected function compareString(string $reqSegment, string $rtSegment): bool
     {
         // If there's only 4 chars, then it's just the type hint
         if ( strlen($rtSegment) == 4 )
@@ -432,11 +423,11 @@ class MatchRoute
         $reqSegmentLength = strlen($reqSegment);
         $specSect  = substr($rtSegment, 4);
 
-        if ( substr($specSect, 0, 1) == '[' and substr($specSect, -1) == ']' )
+        if ( str_starts_with($specSect, '[') and str_ends_with($specSect, ']') )
         {
             $specs = substr($specSect, 1, -1);
 
-            if ( strpos($specs, '-') === false )
+            if ( ! str_contains($specs, '-') )
             {
                 if ( $reqSegmentLength == intval($specs) )
                 {
@@ -473,15 +464,12 @@ class MatchRoute
     /**
      * Breaks apart the input URI into an array of segments
      *
-     * @param string $uri
-     *
-     * @return string[]
      */
-    private function explodeURI($uri)
+    private function explodeURI(string $uri): array
     {
-        $uriSegments = array();
+        $uriSegments = [];
 
-        if ( strpos($uri, '/') === false )
+        if ( !str_contains($uri, '/') )
         {
             return $uriSegments;
         }
@@ -502,9 +490,8 @@ class MatchRoute
     /**
      * Get a single instance of this object for internal use
      *
-     * @return Metrol\Route\MatchRoute
      */
-    private static function getInstance()
+    private static function getInstance(): MatchRoute
     {
         if ( static::$instance === null )
         {
@@ -519,11 +506,11 @@ class MatchRoute
      * Kill the instance that has been instantiated.
      *
      */
-    private static function endInstance()
+    private static function endInstance(): void
     {
-        static::$instance->request = null;
-        static::$instance->route   = null;
-        static::$instance->args    = null;
+        unset(static::$instance->request);
+        unset(static::$instance->route);
+        unset(static::$instance->args);
 
         static::$instance = null;
     }

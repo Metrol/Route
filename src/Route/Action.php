@@ -3,7 +3,7 @@
  * @author        "Michael Collette" <metrol@metrol.net>
  * @package       Metrol/Route
  * @version       1.0
- * @copyright (c) 2016, Michael Collette
+ * @copyright (c) 2022, Michael Collette
  */
 
 namespace Metrol\Route;
@@ -17,24 +17,22 @@ class Action
     /**
      * The class name of the invokable Controller
      *
-     * @var string
      */
-    protected $controllerClass;
+    protected string $controllerClass = '';
 
     /**
      * A method within a Controller that needs to be called
      *
-     * @var string
      */
-    protected $method;
+    protected string $method = '';
 
     /**
      * Initializes the Action Definition
      *
-     * @param string $action Take in a string with a "Class:Action" format to
-     *                       simplify creating a single action Action.
+     * @param string|null $action Take in a string with a "Class:Action" format to
+     *                       simplify creating a single Action.
      */
-    public function __construct($action = null)
+    public function __construct(string $action = null)
     {
         $this->controllerClass = '';
         $this->method          = '';
@@ -53,9 +51,9 @@ class Action
      *
      * @return $this
      */
-    public function setAction($action)
+    public function setAction(string $action): static
     {
-        if ( strpos($action, ':') === false )
+        if ( ! str_contains($action, ':') )
         {
             return $this;
         }
@@ -67,7 +65,7 @@ class Action
             return $this;
         }
 
-        list($class, $method) = explode(':', $action);
+        [$class, $method] = explode(':', $action);
 
         $this->setControllerClass($class)
             ->setControllerMethod($method);
@@ -78,11 +76,8 @@ class Action
     /**
      * Sets the class to be instantiated
      *
-     * @param string $className Name of the controller class
-     *
-     * @return $this
      */
-    public function setControllerClass($className)
+    public function setControllerClass(string $className): static
     {
         // Strip out any spaces
         $className = preg_replace('/\s+/', '', $className);
@@ -97,14 +92,14 @@ class Action
 
         // Make sure we've got a leading back slash.  All controller classes
         // should be fully qualified.
-        if ( substr($className, 0, 1) != '\\' )
+        if ( !str_starts_with($className, '\\') )
         {
             $className = '\\'.$className;
         }
 
         // Strip off any trailing backslashes that may have worked their way in
         // here.
-        if ( substr($className, -1) == '\\' )
+        if ( str_ends_with($className, '\\') )
         {
             $className = substr($className, 0, -1);
         }
@@ -117,14 +112,11 @@ class Action
     /**
      * Assigns the method to be called
      *
-     * @param string $method Name of the method in the Controller Class to call
-     *
-     * @return $this
      */
-    public function setControllerMethod($method)
+    public function setControllerMethod(string $method): static
     {
         // Make sure we didn't get a method that looks like a function call
-        if ( strpos($method, '(') !== false )
+        if ( str_contains($method, '(') )
         {
             $method = substr($method, 0, strpos($method, '('));
         }
@@ -142,9 +134,8 @@ class Action
      * Determines if there is a controller name and at least one method
      * specified.
      *
-     * @return boolean
      */
-    public function isReady()
+    public function isReady(): bool
     {
         $rtn = true;
 
@@ -164,9 +155,8 @@ class Action
     /**
      * Provide the class name of the controller to instantiate
      *
-     * @return string
      */
-    public function getControllerClass()
+    public function getControllerClass(): string
     {
         return $this->controllerClass;
     }
@@ -174,9 +164,8 @@ class Action
     /**
      * Provide the list of methods that need to be called within the Controller
      *
-     * @return string
      */
-    public function getControllerMethod()
+    public function getControllerMethod(): string
     {
         return $this->method;
     }

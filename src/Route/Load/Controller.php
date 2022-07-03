@@ -3,7 +3,7 @@
  * @author        "Michael Collette" <metrol@metrol.net>
  * @package       Metrol/Route
  * @version       1.0
- * @copyright (c) 2016, Michael Collette
+ * @copyright (c) 2022, Michael Collette
  */
 
 namespace Metrol\Route\Load;

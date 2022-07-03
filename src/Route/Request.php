@@ -3,7 +3,7 @@
  * @author        "Michael Collette" <metrol@metrol.net>
  * @package       Metrol/Route
  * @version       1.0
- * @copyright (c) 2016, Michael Collette
+ * @copyright (c) 2022, Michael Collette
  */
 
 namespace Metrol\Route;
@@ -22,16 +22,14 @@ class Request
     /**
      * The URI being passed in as part of the request
      *
-     * @var string
      */
-    protected $uri;
+    protected string $uri;
 
     /**
      * The HTTP method being requested
      *
-     * @var string
      */
-    protected $httpMethod;
+    protected string $httpMethod;
 
     /**
      * Initializes the Route Request Definition

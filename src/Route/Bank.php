@@ -3,7 +3,7 @@
  * @author        "Michael Collette" <metrol@metrol.net>
  * @package       Metrol/Route
  * @version       1.0
- * @copyright (c) 2016, Michael Collette
+ * @copyright (c) 2022, Michael Collette
  */
 
 namespace Metrol\Route;
@@ -21,14 +21,13 @@ class Bank
      *
      * @var Metrol\Route[]
      */
-    private static $routes = [];
+    private static array $routes = [];
 
     /**
      * Make a route deposit to the bank
      *
-     * @param Metrol\Route $route
      */
-    public static function addRoute(Metrol\Route $route)
+    public static function addRoute(Metrol\Route $route): void
     {
         self::$routes[$route->getName()] = $route;
     }
@@ -36,9 +35,6 @@ class Bank
     /**
      * Find a route by name
      *
-     * @param string $routeName
-     *
-     * @return Metrol\Route|null
      */
     public static function getNamedRoute(string $routeName): ?Metrol\Route
     {
@@ -53,11 +49,8 @@ class Bank
     /**
      * Find a route for the specified Request
      *
-     * @param Metrol\Route\Request $request
-     *
-     * @return Metrol\Route|null
      */
-    public static function getRequestedRoute(Metrol\Route\Request $request)
+    public static function getRequestedRoute(Metrol\Route\Request $request): ?Metrol\Route
     {
         foreach ( array_reverse(self::$routes) as $route )
         {
@@ -75,7 +68,6 @@ class Bank
     /**
      * Dump the routes into an array
      *
-     * @return array
      */
     public static function dump(): array
     {
@@ -113,7 +105,6 @@ class Bank
     /**
      * List out all the routes for diagnostic purposes in HTML format
      *
-     * @return string
      */
     public static function dumpHTML(): string
     {
@@ -132,9 +123,6 @@ class Bank
 
 HTML;
 
-        /**
-         * @var Metrol\Route $route
-         */
         foreach ( array_reverse(self::$routes) as $route )
         {
             $actionList = [];

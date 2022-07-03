@@ -3,10 +3,11 @@
  * @author        "Michael Collette" <metrol@metrol.net>
  * @package       Metrol/Route
  * @version       1.0
- * @copyright (c) 2016, Michael Collette
+ * @copyright (c) 2022, Michael Collette
  */
 
 namespace Metrol\Route;
+
 use Metrol;
 use Metrol\Route;
 
@@ -20,44 +21,39 @@ class Reverse
     /**
      * The route this object will be working with.
      *
-     * @var Route
      */
-    private $route;
+    private Route $route;
 
     /**
      * A list of arguments that will be turned into URL segments
      *
-     * @var array
      */
-    private $arguments;
+    private array $arguments;
 
     /**
      * List of key/values to be appended to the URL to be passed as a GET
      * request.
      *
-     * @var array
      */
-    private $getArgs;
+    private array $getArgs;
 
     /**
      * Store the route and instantiate the object.
      *
-     * @param Route $route
      */
     public function __construct(Route $route)
     {
         $this->route = $route;
 
-        $this->arguments = array();
-        $this->getArgs   = array();
+        $this->arguments = [];
+        $this->getArgs   = [];
     }
 
     /**
      * Produces the same as the output() method
      *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->output();
     }
@@ -65,14 +61,13 @@ class Reverse
     /**
      * Output the URL created here
      *
-     * @return string
      */
-    public function output()
+    public function output(): string
     {
         $segmentsExp = explode('/', $this->route->getMatchString());
-        $segments = array();
+        $segments = [];
 
-        // Make sure to weed out any empty segments from the explode
+        // Make sure to weed out any empty segments
         foreach ( $segmentsExp as $segExp )
         {
             if ( ! empty($segExp) )
@@ -88,7 +83,7 @@ class Reverse
         // with a colon.
         foreach ( $segments as $idx => $segment )
         {
-            if ( substr($segment, 0, 1) == ':' )
+            if ( str_starts_with($segment, ':') )
             {
                 $arg = array_shift($arguments);
 
@@ -121,7 +116,7 @@ class Reverse
         $out = '/';
         $out .= implode('/', $segments);
 
-        if ( substr($out, -1) != '/' )
+        if ( !str_ends_with($out, '/') )
         {
             $out .= '/';
         }
@@ -129,7 +124,7 @@ class Reverse
         if ( ! empty($this->getArgs) )
         {
             $out .= '?';
-            $pairs = array();
+            $pairs = [];
 
             foreach ( $this->getArgs as $key => $value )
             {
@@ -145,11 +140,8 @@ class Reverse
     /**
      * Add an argument to the stack to be applied to the URL segments
      *
-     * @param string $arg
-     *
-     * @return $this
      */
-    public function addArg($arg)
+    public function addArg(string $arg): static
     {
         $this->arguments[] = $arg;
 
@@ -159,11 +151,8 @@ class Reverse
     /**
      * Add multiple arguments at once to the argument stack
      *
-     * @param array $args
-     *
-     * @return $this
      */
-    public function addArgs(array $args)
+    public function addArgs(array $args): static
     {
         foreach ( $args as $arg )
         {
@@ -176,11 +165,10 @@ class Reverse
     /**
      * Removes all the arguments that have been passed into this route
      *
-     * @return $this
      */
-    public function clearArgs()
+    public function clearArgs(): static
     {
-        $this->arguments = array();
+        $this->arguments = [];
 
         return $this;
     }
@@ -188,12 +176,8 @@ class Reverse
     /**
      * Add key value pair to the string to append as a GET request
      *
-     * @param string $key
-     * @param string $value
-     *
-     * @return $this
      */
-    public function addGet($key, $value)
+    public function addGet(string $key, string $value): static
     {
         $this->getArgs[$key] = $value;
 
@@ -203,11 +187,10 @@ class Reverse
     /**
      * Removes all the GET string arguments
      *
-     * @return $this
      */
-    public function clearGetArgs()
+    public function clearGetArgs(): static
     {
-        $this->getArgs = array();
+        $this->getArgs = [];
 
         return $this;
     }

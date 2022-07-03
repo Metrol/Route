@@ -3,10 +3,13 @@
  * @author        "Michael Collette" <metrol@metrol.net>
  * @package       Metrol/Route
  * @version       1.0
- * @copyright (c) 2016, Michael Collette
+ * @copyright (c) 2022, Michael Collette
  */
 
 namespace Metrol;
+
+use UnderflowException;
+use OutOfBoundsException;
 
 /**
  * Converts a Route into the calls to action
@@ -28,38 +31,34 @@ class Dispatcher
      * determine which route to run actions from, and will be passed into
      * the actions run.
      *
-     * @var Request
      */
-    protected $request;
+    protected Request $request;
 
     /**
      * The status of the route request following a run.
      *
-     * @var integer|null
      */
-    protected $routeStatus = null;
+    protected ?int $routeStatus = null;
 
     /**
      * Set of found actions to be executed
      *
      * @var Route\Action[]
      */
-    protected $actions = [];
+    protected array $actions = [];
 
     /**
      * The argument values found in the request to be passed along to the
      * action.
      *
-     * @var array
      */
-    protected $arguments = [];
+    protected array $arguments = [];
 
     /**
      * The route that was located during run(), if any
      *
-     * @var Route|null
      */
-    protected $foundRoute = null;
+    protected ?Route $foundRoute = null;
 
     /**
      * Takes in and saves the Route that will be loaded up along with the
@@ -73,12 +72,11 @@ class Dispatcher
     }
 
     /**
-     * Performs a look up on the request to establish all the actions that need
+     * Performs a lookup on the request to establish all the actions that need
      * to be executed.  This will also set the route status flag accordingly.
      *
-     * @return $this
-     */
-    public function run()
+     * @return $this */
+    public function run(): static
     {
         $route = $this->findRoute();
 
@@ -94,7 +92,7 @@ class Dispatcher
         $this->actions    = $route->getActions();
         $this->arguments  = $route->getArguments();
 
-        if ( !empty($this->arguments) )
+        if ( ! empty($this->arguments) )
         {
             // Push the found arguments back into the Request Assigned values
             $this->request->assigned()->addValues($this->arguments);
@@ -108,9 +106,8 @@ class Dispatcher
     /**
      * Provide the route that was found, or null if nothing found yet.
      *
-     * @return Route|null
      */
-    public function getFoundRoute()
+    public function getFoundRoute(): ?Route
     {
         return $this->foundRoute;
     }
@@ -118,9 +115,8 @@ class Dispatcher
     /**
      * Provide the list of arguments found in the URL
      *
-     * @return array
      */
-    public function getArguments()
+    public function getArguments(): array
     {
         return $this->arguments;
     }
@@ -128,9 +124,8 @@ class Dispatcher
     /**
      * Provide the route status following run() being called
      *
-     * @return integer|null
      */
-    public function getRouteStatus()
+    public function getRouteStatus(): ?int
     {
         return $this->routeStatus;
     }
@@ -139,9 +134,8 @@ class Dispatcher
      * Make sure all the controllers and actions in the route exist and are
      * ready to be run.  Set the route status accordingly.
      *
-     * @return void
      */
-    protected function verifyActions()
+    protected function verifyActions(): void
     {
         foreach ( $this->actions as $action )
         {
@@ -180,19 +174,19 @@ class Dispatcher
      *
      * @return string
      *
-     * @throws \UnderflowException
-     * @throws \OutOfBoundsException
+     * @throws UnderflowException
+     * @throws OutOfBoundsException
      */
-    public function execute()
+    public function execute(): string
     {
         if ( $this->routeStatus === null )
         {
-            throw new \UnderflowException('Can not execute a controller action without run() first');
+            throw new UnderflowException('Can not execute a controller action without run() first');
         }
 
         if ( $this->routeStatus !== self::READY_TO_EXECUTE )
         {
-            throw new \OutOfBoundsException('The appropriate routing information not ready to execute');
+            throw new OutOfBoundsException('The appropriate routing information not ready to execute');
         }
 
         $out = '';
@@ -213,9 +207,8 @@ class Dispatcher
     /**
      * Attempt to find a route in the Bank based on the incoming request
      *
-     * @return Route|null
      */
-    private function findRoute()
+    private function findRoute(): ?Route
     {
         $rtReq = new Route\Request;
 

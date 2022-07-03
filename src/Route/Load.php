@@ -3,7 +3,7 @@
  * @author        "Michael Collette" <metrol@metrol.net>
  * @package       Metrol/Route
  * @version       1.0
- * @copyright (c) 2016, Michael Collette
+ * @copyright (c) 2022, Michael Collette
  */
 
 namespace Metrol\Route;
@@ -19,7 +19,6 @@ class Load
     /**
      * File extensions that are supported by this object.
      *
-     * @const
      */
     const EXT_INI  = 'ini';
     const EXT_JSON = 'json';
@@ -27,9 +26,8 @@ class Load
     /**
      * File name being looked at for routes
      *
-     * @var string
      */
-    private $fileName;
+    private string $fileName = '';
 
     /**
      * Initialize the object
@@ -37,7 +35,6 @@ class Load
      */
     public function __construct()
     {
-        $this->fileName = null;
     }
 
     /**
@@ -46,7 +43,7 @@ class Load
      *
      * @return $this
      */
-    public function setFileName($fileName)
+    public function setFileName(string $fileName): static
     {
         $this->fileName = $fileName;
 
@@ -56,9 +53,8 @@ class Load
     /**
      * Initiates the configuration loader
      *
-     * @return $this
      */
-    public function run()
+    public function run(): static
     {
         $ext    = $this->testFile();
         $parser = null;
@@ -70,7 +66,8 @@ class Load
                 break;
 
             case self::EXT_JSON:
-                $parser = new Load\Json;
+                // @todo Future support for JSON coming some day
+                // $parser = new Load\Json;
                 break;
         }
 
@@ -87,9 +84,9 @@ class Load
      *
      * @return string The file extension found
      */
-    private function testFile()
+    private function testFile(): string
     {
-        if ( $this->fileName == null )
+        if ( empty($this->fileName) )
         {
             echo 'Your attempt to load a route has failed due to no file being ',
                 'specified.<br>', PHP_EOL, 'Exiting....', PHP_EOL;
@@ -115,17 +112,14 @@ class Load
         {
             case self::EXT_INI:
                 return self::EXT_INI;
-                break;
 
             case self::EXT_JSON:
                 return self::EXT_JSON;
-                break;
 
             default:
                 echo 'Unknown configuration file type<br>';
                 echo PHP_EOL, 'Exiting...', PHP_EOL;
                 exit;
         }
-
     }
 }
