@@ -10,12 +10,17 @@
         {
             "type": "vcs",
             "url" : "https://github.com/Metrol/Request"
+        },
+        {
+            "type": "vcs",
+            "url" : "https://github.com/Metrol/status"
         }
     ],
 
     "require" : {
         "php"           : ">=8.0",
-        "metrol/request": "dev-master"
+        "metrol/request": "dev-master",
+        "metrol/status" : "1.*"
     },
 
     "require-dev": {
