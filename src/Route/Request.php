@@ -60,11 +60,8 @@ class Request
      * Used to set the information in this object based on a Metrol\Request
      * object.
      *
-     * @param Metrol\Request $request
-     *
-     * @return $this
      */
-    public function setRequest(Metrol\Request $request)
+    public function setRequest(Metrol\Request $request): static
     {
         $this->setUri($request->server()->uri);
         $this->setHttpMethod($request->server()->method);
@@ -74,22 +71,18 @@ class Request
 
     /**
      *
-     * @return string
      */
-    public function getUri()
+    public function getUri(): string
     {
         return $this->uri;
     }
 
     /**
      *
-     * @param string $uri
-     *
-     * @return $this
      */
-    public function setUri($uri)
+    public function setUri(string $uri): static
     {
-        if ( strpos($uri, '?') !== false )
+        if ( str_contains($uri, '?') )
         {
             $uri = substr($uri, 0, strpos($uri, '?') );
         }
@@ -101,20 +94,16 @@ class Request
 
     /**
      *
-     * @return string
      */
-    public function getHttpMethod()
+    public function getHttpMethod(): string
     {
         return $this->httpMethod;
     }
 
     /**
      *
-     * @param string $httpMethod
-     *
-     * @return $this
      */
-    public function setHttpMethod($httpMethod)
+    public function setHttpMethod(string $httpMethod): static
     {
         $httpMethod = strtoupper($httpMethod);
 

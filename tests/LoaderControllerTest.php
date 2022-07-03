@@ -11,7 +11,6 @@ namespace Metrol\Tests;
 use PHPUnit\Framework\TestCase;
 use Metrol\Route\{Load, Bank};
 
-
 /**
  * Verifies that routes can be loaded from a controller class, as well as a
  * defined parent controller

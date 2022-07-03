@@ -7,7 +7,9 @@
  */
 
 namespace Metrol\Route;
+
 use Metrol;
+use const PATHINFO_EXTENSION;
 
 /**
  * Acts as a front end to various route loader objects that will populate the
@@ -105,7 +107,7 @@ class Load
             exit;
         }
 
-        $ext = pathinfo($this->fileName, \PATHINFO_EXTENSION);
+        $ext = pathinfo($this->fileName, PATHINFO_EXTENSION);
         $ext = strtolower($ext);
 
         switch ( $ext )
