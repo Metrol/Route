@@ -146,8 +146,8 @@ HTML;
             <td>{$route->getName()}</td>
             <td>{$route->getHttpMethod()}</td>
             <td>{$route->getMatchString()}</td>
-            <td>{$paramCell}</td>
-            <td>{$actionCell}</td>
+            <td>$paramCell</td>
+            <td>$actionCell</td>
         </tr>
 
 HTML;

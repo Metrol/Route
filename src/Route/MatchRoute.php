@@ -290,23 +290,13 @@ class MatchRoute
      */
     protected function hintMatch(string $reqSegment, string $rtSegment): bool
     {
-        switch ( substr($rtSegment, 0, 4) )
+        $rtn = match (substr($rtSegment, 0, 4))
         {
-            case Metrol\Route::HINT_INTEGER:
-                $rtn = $this->compareInteger($reqSegment, $rtSegment);
-                break;
-
-            case Metrol\Route::HINT_NUMBER:
-                $rtn = $this->compareNumber($reqSegment, $rtSegment);
-                break;
-
-            case Metrol\Route::HINT_STRING:
-                $rtn = $this->compareString($reqSegment, $rtSegment);
-                break;
-
-            default:
-                $rtn = false;
-        }
+            Metrol\Route::HINT_INTEGER => $this->compareInteger($reqSegment, $rtSegment),
+            Metrol\Route::HINT_NUMBER => $this->compareNumber($reqSegment, $rtSegment),
+            Metrol\Route::HINT_STRING => $this->compareString($reqSegment, $rtSegment),
+            default => false,
+        };
 
         if ( $rtn )
         {

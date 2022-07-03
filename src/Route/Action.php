@@ -44,7 +44,7 @@ class Action
     }
 
     /**
-     * Takes in a colon delimited string and seperates it out to the Controller/
+     * Takes in a colon delimited string and separates it out to the Controller/
      * Method pair that makes up an action.
      *
      * @param string $action
@@ -90,7 +90,7 @@ class Action
         // Insure no duplicate delimiters
         $className = preg_replace('~\\\{2,}~', '\\', $className);
 
-        // Make sure we've got a leading back slash.  All controller classes
+        // Make sure we've got a leading backslash.  All controller classes
         // should be fully qualified.
         if ( !str_starts_with($className, '\\') )
         {
