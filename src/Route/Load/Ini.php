@@ -35,16 +35,14 @@ class Ini
     /**
      * File name being looked at for routes
      *
-     * @var string
      */
-    private $fileName;
+    private string $fileName = '';
 
     /**
      * The parsed values
      *
-     * @var array
      */
-    private $parsed;
+    private array $parsed = [];
 
     /**
      * Initialize the object
@@ -52,17 +50,13 @@ class Ini
      */
     public function __construct()
     {
-        $this->fileName = null;
-        $this->parsed   = null;
     }
 
     /**
+     * Specify the file name of the INI file to parse
      *
-     * @param string $fileName
-     *
-     * @return $this
      */
-    public function setFileName($fileName)
+    public function setFileName(string $fileName): static
     {
         $this->fileName = $fileName;
 
@@ -74,7 +68,7 @@ class Ini
      * already been checked before this is even attempted.
      *
      */
-    public function run()
+    public function run(): void
     {
         $this->parsed = parse_ini_file($this->fileName, true);
 
@@ -94,7 +88,7 @@ class Ini
      * routes to the Bank to be looked up later.
      *
      */
-    private function buildRoutes()
+    private function buildRoutes(): void
     {
         $actionPrefix = $this->getActionPrefix();
 
@@ -114,9 +108,8 @@ class Ini
     /**
      * Fetch the Action Prefix if it exists.
      *
-     * @return string
      */
-    private function getActionPrefix()
+    private function getActionPrefix(): string
     {
         $actionPrefix = ''; // Set to the prefix of the controller, if available
 
@@ -131,10 +124,8 @@ class Ini
 
     /**
      *
-     * @param Route $route
-     * @param array $routeInfo
      */
-    private function setMatch(Route $route, array $routeInfo)
+    private function setMatch(Route $route, array $routeInfo): void
     {
         if ( isset($routeInfo[self::KEY_MATCH]) )
         {
@@ -143,11 +134,10 @@ class Ini
     }
 
     /**
+     * Specify the HTTP method to be expecting
      *
-     * @param Route $route
-     * @param array $routeInfo
      */
-    private function setMethod(Route $route, array $routeInfo)
+    private function setMethod(Route $route, array $routeInfo): void
     {
         if ( isset($routeInfo[self::KEY_METHOD]) )
         {
@@ -156,11 +146,10 @@ class Ini
     }
 
     /**
+     * Specify the maximum number of parameters to look for in the URL
      *
-     * @param Route $route
-     * @param array $routeInfo
      */
-    private function setMaxParams(Route $route, array $routeInfo)
+    private function setMaxParams(Route $route, array $routeInfo): void
     {
         if ( isset($routeInfo[self::KEY_MAX_PARAMS]) )
         {
@@ -170,11 +159,8 @@ class Ini
 
     /**
      *
-     * @param Route  $route
-     * @param array  $routeInfo
-     * @param string $actionPrefix   Action Controller prefix
      */
-    private function setActions(Route $route, array $routeInfo, $actionPrefix)
+    private function setActions(Route $route, array $routeInfo, string $actionPrefix): void
     {
         if ( ! isset($routeInfo[self::KEY_ACTION]) )
         {
@@ -192,7 +178,7 @@ class Ini
 
         foreach ( $actions as $actionString )
         {
-            if ( substr($actionString, 0, 1) != '\\' )
+            if ( !str_starts_with($actionString, '\\') )
             {
                 $actionString = $actionPrefix.'\\'.$actionString;
             }
