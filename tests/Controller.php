@@ -1,4 +1,7 @@
 <?php
+namespace Metrol\Tests;
+
+
 /**
  * This is pretend controller that will be parsed for route information
  *
@@ -112,6 +115,6 @@ class Controller
      */
     public function notARoute(array $args): string
     {
-
+        return '';
     }
 }

@@ -5,6 +5,7 @@
  * @version       1.0
  * @copyright (c) 2022, Michael Collette
  */
+namespace Metrol\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Metrol\Route\Action;

@@ -5,6 +5,7 @@
  * @version       1.0
  * @copyright (c) 2022, Michael Collette
  */
+namespace Metrol\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Metrol\Route;
@@ -13,7 +14,7 @@ use Metrol\Route\MatchRoute;
 use Metrol\Route\Request;
 
 /**
- * Insure that routes can be created, given information, and have be able to
+ * Ensure that routes can be created, given information, and be able to
  * get that information back.
  *
  */
@@ -45,7 +46,7 @@ class RouteAddTest extends TestCase
     }
 
     /**
-     * See if the Route Match object is able to lookup a simple route
+     * See if the Route Match object is able to look up a simple route
      *
      */
     public function testCheckMatchRoute()
@@ -127,34 +128,59 @@ class RouteAddTest extends TestCase
     }
 
     /**
-     * Make sure that extra arguments not hinted are properly gathered up and
+     * Make sure that extra arguments not hinted are properly gathered and
      * passed to the route.
      *
      */
     public function testOverflowArguments()
     {
-        $route = (new Route('View by ID'))->setMatchString('/view/:int/');
+        $route = (new Route('View by ID'))
+            ->setMatchString('/view/:int/');
+
+        // This one should fail with too many segments
         $request = (new Request)
             ->setUri('/view/1234/abcd/xyz/')
             ->setHttpMethod('GET');
 
         $match = MatchRoute::check($request, $route);
-        $args  = $route->getArguments();
 
-        $this->assertTrue($match);
+        $this->assertFalse($match, 'Should have failed, too many segments');
+
+        // Tell the route to accept more segments
+        $route->setMaxParameters(4);
+        $match = MatchRoute::check($request, $route);
+        $this->assertTrue($match, 'Should have allowed all segments');
+
+        // Check that all the segments came through
+        $args  = $route->getArguments();
         $this->assertEquals('1234', $args[0]);
         $this->assertEquals('abcd', $args[1]);
         $this->assertEquals('xyz',  $args[2]);
 
-        // Now set a max parameter value to make sure we don't get false hits
+        // Now only check for 1 extra parameter
+        $request->setUri('/view/1234/abcd/');
         $route->setMaxParameters(1);
         $match = MatchRoute::check($request, $route);
-
-        $this->assertFalse($match);
-
-        $route->setMaxParameters(2);
-        $match = MatchRoute::check($request, $route);
         $this->assertTrue($match);
+        $args  = $route->getArguments();
+        $this->assertEquals('1234', $args[0]);
+        $this->assertEquals('abcd', $args[1]);
+
+        // Look for a false hit with too many parameters
+        $request->setUri('/view/1234/abcd/xyzf/');
+        $match = MatchRoute::check($request, $route);
+        $this->assertFalse($match, 'Should have failed with too many segments');
+
+        // Fix the URL to have the correct number of segments
+        $route->setMaxParameters(0);
+        $request->setUri('/view/1234/');
+        $match = MatchRoute::check($request, $route);
+
+        $this->assertTrue($match, 'Should have passed with correct number of'
+                         . ' segments');
+
+        $args  = $route->getArguments();
+        $this->assertEquals('1234', $args[0], 'Looking to fetch the argument');
     }
 
     /**

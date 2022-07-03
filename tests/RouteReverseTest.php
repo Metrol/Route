@@ -5,10 +5,11 @@
  * @version       1.0
  * @copyright (c) 2022, Michael Collette
  */
+namespace Metrol\Tests;
 
 use PHPUnit\Framework\TestCase;
-use \Metrol\Route;
-use \Metrol\Route\Reverse;
+use Metrol\Route;
+use Metrol\Route\Reverse;
 
 /**
  * Verifies the ability of the Route\Reverse object to produce a correct URL
@@ -121,7 +122,7 @@ class RouteReverseTest extends TestCase
 
         $reverse->clearGetArgs();
 
-        // All of the GET string is now removed, ready for new data
+        // All the GET string is now removed, ready for new data
         $this->assertEquals('/view/555/', $reverse->output());
     }
 }

@@ -5,12 +5,13 @@
  * @version       1.0
  * @copyright (c) 2022, Michael Collette
  */
+namespace Metrol\Tests;
 
 use PHPUnit\Framework\TestCase;
-use \Metrol\Route\Request;
+use Metrol\Route\Request;
 
 /**
- * The Route library has it's own little request parser.  Verify some of what
+ * The Route library has its own little request parser.  Verify some of what
  * it should be doing.
  *
  */

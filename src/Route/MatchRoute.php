@@ -493,7 +493,7 @@ class MatchRoute
      */
     private static function getInstance(): MatchRoute
     {
-        if ( static::$instance === null )
+        if ( ! isset(static::$instance) or is_null(static::$instance) )
         {
             static::$instance = new MatchRoute;
             static::$noMatchReason = '';
