@@ -11,6 +11,7 @@ namespace Metrol\Tests;
 use PHPUnit\Framework\TestCase;
 use Metrol\Route\{Load, Bank};
 
+
 /**
  * Verifies that routes can be loaded from a controller class, as well as a
  * defined parent controller
@@ -26,21 +27,25 @@ class LoaderControllerTest extends TestCase
     {
         $this->assertTrue(true);
 
-        return;
+        $controllerName = '\Metrol\Tests\Controller\ActionCity';
 
         $parser = new Load\Controller;
-        $parser->setControllerName('\Controller')->run();
+        $parser->setControllerName($controllerName)->run();
 
-        $route = Bank::getNamedRoute('\Controller:get_view');
+        $action = $controllerName . ':get_view';
 
-        $this->assertEquals('\Controller:get_view', $route->getName());
+        $route = Bank::getNamedRoute($action);
+        $this->assertEquals($action, $route->getName());
+
         $this->assertEquals('/tester/view/', $route->getMatchString());
         $this->assertEquals('GET', $route->getHttpMethod());
         $this->assertEquals(0, $route->getMaxParameters());
 
         // Verify a route with a different HTTP method
-        $route = Bank::getNamedRoute('\Controller:post_updatestuff');
-        $this->assertEquals('\Controller:post_updatestuff', $route->getName());
+        $action = $controllerName . ':post_updatestuff';
+        $route = Bank::getNamedRoute($action);
+
+        $this->assertEquals($action, $route->getName());
         $this->assertEquals('/tester/updatestuff/', $route->getMatchString());
         $this->assertEquals('POST', $route->getHttpMethod());
 
@@ -53,7 +58,7 @@ class LoaderControllerTest extends TestCase
 
         $action = $route->getActions()[0];
 
-        $this->assertEquals('\Controller', $action->getControllerClass() );
+        $this->assertEquals($controllerName, $action->getControllerClass() );
         $this->assertEquals('get_pageview', $action->getControllerMethod() );
 
         // Check that a private method does not create a route.
