@@ -25,7 +25,7 @@ class RouteReverseTest extends TestCase
     public function testRouteReversal()
     {
         $route = new Route('Cool Route');
-        $route->setMatchString('/view/:int/stuff/:str/other');
+        $route->setMatchString('/view/:int/stuff/:str/other/');
 
         $reverse = new Reverse($route);
 
@@ -40,6 +40,12 @@ class RouteReverseTest extends TestCase
         // More arguments
         $reverse->addArg('tack to end');
 
+        // This should not work, as it's a parameter at the end that hasn't been
+        // allowed past the match string
+        $this->assertNotEquals('/view/123/stuff/How+dy/other/tack+to+end/', $reverse->output());
+
+        // Adjust max parameters to allow an extra string on there.  Now passes.
+        $route->setMaxParameters(1);
         $this->assertEquals('/view/123/stuff/How+dy/other/tack+to+end/', $reverse->output());
     }
 
@@ -101,7 +107,9 @@ class RouteReverseTest extends TestCase
         $reverse = $route->getReverse();
 
         $reverse->addArgs([123, 456, 789]);
+        $this->assertNotEquals('/view/123/456/789/', $reverse->output());
 
+        $route->setMaxParameters(2); // Adding 2 segments past the match
         $this->assertEquals('/view/123/456/789/', $reverse->output());
 
         $reverse->clearArgs()->addArg('555');
