@@ -58,6 +58,8 @@ class ControllerParent
     public function run(): void
     {
         $this->assembleFiles();
+
+        $this->createRoutes();
     }
 
     /**
@@ -102,14 +104,55 @@ class ControllerParent
             $contClass = str_replace('/', '\\', $contClass);
             $contClass = $this->parentControllerName . $contClass;
 
-            // @todo Add a check here that the controller class extends the parent
-
             $this->controllerSet[] = $contClass;
-
-            echo $contClass . PHP_EOL;
         }
     }
 
+    /**
+     * Pass each of the controller names into the Load Controller class and
+     * have that fill in the routing table.
+     *
+     */
+    private function createRoutes(): void
+    {
+        foreach ( $this->controllerSet as $controllerName )
+        {
+            try
+            {
+                $contReflect = new ReflectionClass($controllerName);
+            }
+            catch ( ReflectionException )
+            {
+                continue;
+            }
+
+            if ( ! $contReflect->isSubclassOf($this->parentControllerName)  )
+            {
+                continue;
+            }
+
+            $controllerLoader = new Controller;
+            $controllerLoader
+                ->setControllerName($controllerName)
+                ->setMatchPrefix($this->getControllerLinkPrefix($controllerName))
+                ->run();
+        }
+    }
+
+    /**
+     * Figure out the link prefix for the controller name
+     *
+     */
+    private function getControllerLinkPrefix( string $controllerName ): string
+    {
+        $parNameLen = strlen($this->parentControllerName) + 1;
+
+        $linkPrefix = substr($controllerName, $parNameLen);
+        $linkPrefix = str_replace('\\', '/', $linkPrefix);
+        $linkPrefix = '/' . $linkPrefix . '/';
+
+        return strtolower($linkPrefix);
+    }
 
     /**
      * A file utility to provide all the files under all the directories from

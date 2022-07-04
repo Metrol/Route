@@ -22,10 +22,8 @@ class LoaderControllerTest extends TestCase
      * Test loading in a routes from a Controller class
      *
      */
-    public function testLoadingFromAControllerClass()
+    public function testLoadingFromAControllerClass(): void
     {
-        $this->assertTrue(true);
-
         $controllerName = '\Metrol\Tests\Controller\ActionCity';
 
         $parser = new Load\Controller;
@@ -76,5 +74,19 @@ class LoaderControllerTest extends TestCase
 
         $route = Bank::getNamedRoute('Page Index Root');
         $this->assertEquals('/tester/', $route->getMatchString());
+    }
+
+    /**
+     * Test loading multiple controller classes with the parent loader
+     *
+     */
+    public function testParentControllerLoader(): void
+    {
+        $parentControllerName = '\Metrol\Tests\Controller';
+
+        $parser = new Load\ControllerParent($parentControllerName);
+        $parser->run();
+
+        $this->assertTrue(true);
     }
 }

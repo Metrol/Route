@@ -57,6 +57,12 @@ class Controller
     private array $attributes;
 
     /**
+     * Used for the link prefix when manually set.
+     *
+     */
+    private string $matchPrefix;
+
+    /**
      * Initialize the object
      *
      */
@@ -85,6 +91,18 @@ class Controller
     public function setControllerName(string $name): static
     {
         $this->controllerName = $name;
+
+        return $this;
+    }
+
+    /**
+     * Sets a match prefix to use when the match isn't specified by either
+     * a class constant in the controller or a match spec in an action.
+     *
+     */
+    public function setMatchPrefix(string $matchPrefix): static
+    {
+        $this->matchPrefix = $matchPrefix;
 
         return $this;
     }
@@ -206,6 +224,10 @@ class Controller
             {
                 $class    = $this->controllerName;
                 $matchPre = $class::MATCH_PREFIX;
+            }
+            elseif ( isset($this->matchPrefix) )
+            {
+                $matchPre = $this->matchPrefix;
             }
             else
             {
