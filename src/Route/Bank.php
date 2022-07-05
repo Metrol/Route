@@ -33,6 +33,29 @@ class Bank
     }
 
     /**
+     * Provide a URI string for the given named route
+     *
+     */
+    static public function uri(string $routeName, array $args = null): string
+    {
+        $route = self::getNamedRoute($routeName);
+
+        if ( is_null($route) )
+        {
+            return '';
+        }
+
+        $revRoute = new Reverse($route);
+
+        if ( ! empty($args) )
+        {
+            $revRoute->addArgs($args);
+        }
+
+        return $revRoute->output();
+    }
+
+    /**
      * Find a route by name
      *
      */
@@ -63,6 +86,16 @@ class Bank
         }
 
         return null;
+    }
+
+    /**
+     * Removes all routes from the bank, to start things up fresh.  Mostly just
+     * need this for testing purposes.
+     *
+     */
+    static public function clearAllRoutes(): void
+    {
+        self::$routes = [];
     }
 
     /**
