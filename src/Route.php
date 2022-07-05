@@ -57,7 +57,6 @@ class Route
        self::HTTP_DELETE
     ];
 
-
     /**
      * The name of this route.
      *
