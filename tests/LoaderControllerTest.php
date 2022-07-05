@@ -24,6 +24,8 @@ class LoaderControllerTest extends TestCase
      */
     public function testLoadingFromAControllerClass(): void
     {
+        // Make sure all routes going into the bank are from here
+        Bank::clearAllRoutes();
         $controllerName = '\Metrol\Tests\Controller\ActionCity';
 
         $parser = new Load\Controller;
@@ -52,6 +54,17 @@ class LoaderControllerTest extends TestCase
         $this->assertEquals('/stuff/:int/', $route->getMatchString());
         $this->assertEquals(0, $route->getMaxParameters());
         $this->assertCount(1, $route->getActions());
+
+        // Check that the bank can return a named link
+        $this->assertEquals('/stuff/1234/', Bank::uri('Page View', [1234]) );
+
+        // The named link should not allow more arguments than allowed
+        $this->assertEquals('/stuff/1234/', Bank::uri('Page View', [1234, 3454]) );
+
+        // Allow for a couple more parameters, check they take, and no more
+        $route->setMaxParameters(2);
+        $this->assertEquals('/stuff/1234/3454/2222/', Bank::uri('Page View', [1234, 3454, 2222]) );
+        $this->assertEquals('/stuff/1234/3454/2222/', Bank::uri('Page View', [1234, 3454, 2222, 3333]) );
 
         $action = $route->getActions()[0];
 
@@ -82,10 +95,39 @@ class LoaderControllerTest extends TestCase
      */
     public function testParentControllerLoader(): void
     {
+        // Make sure all routes going into the bank are from here
+        Bank::clearAllRoutes();
+
         $parentControllerName = '\Metrol\Tests\Controller';
 
         $parser = new Load\ControllerParent($parentControllerName);
         $parser->run();
+
+        $controllerName = '\Metrol\Tests\Controller\ActionCity';
+        $action = $controllerName . ':get_view';
+
+        $route = Bank::getNamedRoute($action);
+        $this->assertEquals($action, $route->getName());
+
+        $this->assertEquals('/tester/view/', $route->getMatchString());
+        $this->assertEquals('GET', $route->getHttpMethod());
+        $this->assertEquals(0, $route->getMaxParameters());
+
+        // Verify a route with a different HTTP method
+        $action = $controllerName . ':post_updatestuff';
+        $route = Bank::getNamedRoute($action);
+
+        $this->assertEquals($action, $route->getName());
+        $this->assertEquals('/tester/updatestuff/', $route->getMatchString());
+        $this->assertEquals('POST', $route->getHttpMethod());
+
+        // Pull in an action from the Extra\API controller
+        $actionName = 'API Data Fetch';
+        $route = Bank::getNamedRoute($actionName);
+        $this->assertEquals($actionName, $route->getName());
+        $this->assertEquals('/extra/api/datafetch/', $route->getMatchString());
+        $this->assertEquals('/extra/api/datafetch/', Bank::uri($actionName));
+
 
         $this->assertTrue(true);
     }
