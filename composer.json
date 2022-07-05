@@ -19,8 +19,7 @@
 
     "require" : {
         "php"           : ">=8.0",
-        "metrol/request": "dev-master",
-        "metrol/status" : "1.*"
+        "metrol/request": "dev-master"
     },
 
     "require-dev": {
