@@ -172,12 +172,10 @@ class Dispatcher
     /**
      * Execute the action based on the found route following a run.
      *
-     * @return string
-     *
      * @throws UnderflowException
      * @throws OutOfBoundsException
      */
-    public function execute(): string
+    public function execute(): ?string
     {
         if ( $this->routeStatus === null )
         {
