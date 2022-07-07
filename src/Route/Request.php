@@ -23,13 +23,13 @@ class Request
      * The URI being passed in as part of the request
      *
      */
-    protected string $uri;
+    protected string $uri = self::DEFAULT_URI;
 
     /**
      * The HTTP method being requested
      *
      */
-    protected string $httpMethod;
+    protected string $httpMethod = self::DEFAULT_HTTP_METHOD;
 
     /**
      * Initializes the Route Request Definition
@@ -41,18 +41,10 @@ class Request
         {
             $this->setUri($_SERVER['REQUEST_URI']);
         }
-        else
-        {
-            $this->uri = self::DEFAULT_URI;
-        }
 
         if ( isset($_SERVER['REQUEST_METHOD']) )
         {
             $this->setHttpMethod($_SERVER['REQUEST_METHOD']);
-        }
-        else
-        {
-            $this->httpMethod = self::DEFAULT_HTTP_METHOD;
         }
     }
 
