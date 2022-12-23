@@ -70,6 +70,29 @@ class Bank
     }
 
     /**
+     * Provide the URL for a named route with arguments
+     *
+     */
+    public static function getNamedURL(string $routeName, mixed ...$args): string
+    {
+        $route = self::getNamedRoute($routeName);
+
+        if ( is_null($route) )
+        {
+            return '';
+        }
+
+        $reverseRoute = $route->getReverse();
+
+        foreach ( $args as $argument )
+        {
+            $reverseRoute->addArg($argument);
+        }
+
+        return $reverseRoute->output();
+    }
+
+    /**
      * Find a route for the specified Request
      *
      */
