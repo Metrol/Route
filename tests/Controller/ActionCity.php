@@ -25,9 +25,6 @@ class ActionCity extends Controller
     /**
      * Called to view a page.
      *
-     * @param array
-     *
-     * @return string
      */
     public function get_view(array $args): string
     {
@@ -41,9 +38,6 @@ class ActionCity extends Controller
      * @routename Page View
      * @maxparam  0
      *
-     * @param array
-     *
-     * @return string
      */
     public function get_pageview(array $args): string
     {
@@ -57,9 +51,6 @@ class ActionCity extends Controller
      * @routename Page View Wide
      * @maxparam  0
      *
-     * @param array
-     *
-     * @return string
      */
     public function get_page_view_wide(array $args): string
     {
@@ -72,9 +63,6 @@ class ActionCity extends Controller
      * @routename Page Index Root
      * @maxparam  0
      *
-     * @param array
-     *
-     * @return string
      */
     public function get_(array $args): string
     {
@@ -84,9 +72,6 @@ class ActionCity extends Controller
     /**
      * See if the HTTP method is properly parsed
      *
-     * @param array
-     *
-     * @return string
      */
     public function post_updatestuff(array $args): string
     {
@@ -96,9 +81,6 @@ class ActionCity extends Controller
     /**
      * Shouldn't be turned into a route because it's private
      *
-     * @param array
-     *
-     * @return string
      */
     private function get_nothing(array $args): string
     {
@@ -110,9 +92,6 @@ class ActionCity extends Controller
      *
      * @routename NonRoute
      *
-     * @param array
-     *
-     * @return string
      */
     public function notARoute(array $args): string
     {
