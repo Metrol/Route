@@ -34,7 +34,7 @@ class LoaderControllerTest extends TestCase
         $parser = new Load\Controller($refClass);
         $parser->run();
 
-        $action = 'ActionCity View';
+        $action = 'ActionCity Get View';
 
         $route = Bank::getNamedRoute($action);
         $this->assertEquals($action, $route->getName());
@@ -44,7 +44,7 @@ class LoaderControllerTest extends TestCase
         $this->assertEquals(0, $route->getMaxParameters());
 
         // Verify a route with a different HTTP method
-        $action = 'ActionCity Updatestuff';
+        $action = 'ActionCity Post Updatestuff';
         $route = Bank::getNamedRoute($action);
 
         $this->assertEquals($action, $route->getName());
@@ -108,7 +108,7 @@ class LoaderControllerTest extends TestCase
         $parser = new Load\Controller($refClass);
         $parser->run();
 
-        $action = 'ActionCity Report Annual';
+        $action = 'ActionCity Get Report Annual';
 
         $route = Bank::getNamedRoute($action);
         $this->assertEquals($action, $route->getName());
@@ -132,7 +132,7 @@ class LoaderControllerTest extends TestCase
         $parser = new Load\ControllerParent($parentControllerName);
         $parser->run();
 
-        $action = 'ActionCity View';
+        $action = 'ActionCity Get View';
 
         $route = Bank::getNamedRoute($action);
         $this->assertEquals($action, $route->getName());

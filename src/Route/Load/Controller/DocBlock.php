@@ -281,8 +281,6 @@ class DocBlock
 
         $methodName = $method->getName();
 
-        $methodName = str_replace(self::PREFIX_REF, '', $methodName);
-
         $methodName = str_replace('_', ' ', $methodName);
 
         $routeName = ucwords($linkPrefix . ' ' . $methodName);
