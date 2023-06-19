@@ -66,21 +66,9 @@ class DocBlock
     }
 
     /**
-     * There is already an assumption that the validity of the file name has
-     * already been checked before this is even attempted.
      *
      */
     public function run(): void
-    {
-        $this->buildRoutes();
-    }
-
-    /**
-     * Takes the parsed information, builds out the routes, and adds those
-     * routes to the Bank to be looked up later.
-     *
-     */
-    private function buildRoutes(): void
     {
         $methods = $this->reflect->getMethods(ReflectionMethod::IS_PUBLIC);
 
