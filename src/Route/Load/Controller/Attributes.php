@@ -17,7 +17,6 @@ class Attributes
      */
     private ReflectionClass $reflect;
 
-
     /**
      * Instantiate the Controller Attribute loader
      *

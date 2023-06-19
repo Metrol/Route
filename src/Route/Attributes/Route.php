@@ -44,8 +44,29 @@ class Route
      */
     const DELETE = 'DELETE';
 
+    /**
+     * List of all the allowed methods that can be processed here
+     *
+     */
+    private const METHOD_REF = [
+        self::GET,
+        self::POST,
+        self::PUT,
+        self::DELETE
+    ];
+
+    /**
+     * List of the allowed type hints
+     *
+     */
+    private const TYPE_HINT_REF = [
+        self::HINT_STR,
+        self::HINT_INT,
+        self::HINT_NUM
+    ];
+
     public string $match    = '';
-    public string $method   = '';
+    public string $method   = self::GET;
     public string $name     = '';
     public int    $maxParam = 0;
 
@@ -67,9 +88,9 @@ class Route
             $this->match = $match;
         }
 
-        if ( ! is_null($method) )
+        if ( in_array(strtoupper($method), self::METHOD_REF) )
         {
-            $this->method = $method;
+            $this->method = strtoupper($method);
         }
 
         if ( ! is_null($name) )
@@ -84,7 +105,13 @@ class Route
 
         if ( ! is_null($args) )
         {
-            $this->args = $args;
+            foreach ( $args as $typeHint )
+            {
+                if ( in_array( strtolower($typeHint), self::TYPE_HINT_REF) )
+                {
+                    $this->args[] = $typeHint;
+                }
+            }
         }
     }
 }
