@@ -12,7 +12,6 @@ use Metrol\Route\Bank;
 use Metrol\Route\Action;
 use ReflectionMethod;
 use ReflectionClass;
-use ReflectionException;
 
 /**
  * Parses the method names and php doc blocks for route information to create
