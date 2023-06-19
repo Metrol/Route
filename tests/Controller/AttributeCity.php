@@ -2,6 +2,7 @@
 namespace Metrol\Tests\Controller;
 
 use Metrol\Tests\Controller;
+use Metrol\Route\Attributes\Route;
 
 /**
  * This is pretend controller uses Attributes instead of doc blocks to
@@ -28,12 +29,9 @@ class AttributeCity extends Controller
     /**
      * Has a custom route name and match string in the docBlock here.
      *
-     * @match     /stuff/:int/
-     * @routename Page View
-     * @maxparam  0
-     *
      */
-    public function get_pageview(array $args): string
+    #[Route(name: 'Funky Page View', args: [':int', ':int'])]
+    public function pageview(array $args): string
     {
         return '';
     }
@@ -41,9 +39,6 @@ class AttributeCity extends Controller
     /**
      * Has an underscore in the middle of the method name, which should be
      * turned into a slash for the match string.
-     *
-     * @routename Page View Wide
-     * @maxparam  0
      *
      */
     public function get_page_view_wide(array $args): string

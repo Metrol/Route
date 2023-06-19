@@ -159,6 +159,15 @@ class Bank
     }
 
     /**
+     * Provide the array of routes stored here
+     *
+     */
+    public static function getAllRoutes(): array
+    {
+        return self::$routes;
+    }
+
+    /**
      * List out all the routes for diagnostic purposes in HTML format
      *
      */

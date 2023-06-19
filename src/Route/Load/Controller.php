@@ -7,7 +7,10 @@
  */
 
 namespace Metrol\Route\Load;
+use Metrol\Route\Attributes\Route as AttrRoute;
+use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionMethod;
 
 /**
  * Parses the method names and phpDoc blocks for route information to create
@@ -34,6 +37,29 @@ class Controller
      */
     public function run(): void
     {
+        $methods = $this->reflect->getMethods(ReflectionMethod::IS_PUBLIC);
+
+        $parseAttributes = false;
+
+        foreach ( $methods as $method )
+        {
+            $attributes = $method->getAttributes(AttrRoute::class,
+                ReflectionAttribute::IS_INSTANCEOF);
+
+            if (count($attributes) > 0)
+            {
+                $parseAttributes = true;
+            }
+        }
+
+        if ( $parseAttributes )
+        {
+            $attrLoad = new Controller\Attributes($this->reflect);
+            $attrLoad->run();
+
+            return;
+        }
+
         $docBlockLoad = new Controller\DocBlock($this->reflect);
         $docBlockLoad->run();
     }

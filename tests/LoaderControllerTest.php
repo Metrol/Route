@@ -119,6 +119,27 @@ class LoaderControllerTest extends TestCase
     }
 
     /**
+     * Test loading from Attributes
+     *
+     */
+    public function testLoadFromAttributes(): void
+    {
+        // Make sure all routes going into the bank are from here
+        Bank::clearAllRoutes();
+        $controllerName = '\Metrol\Tests\Controller\AttributeCity';
+
+        $refClass = new ReflectionClass($controllerName);
+
+        $parser = new Load\Controller($refClass);
+        $parser->run();
+
+        $bank = Bank::getAllRoutes();
+
+        $x = 1;
+
+    }
+
+    /**
      * Test loading multiple controller classes with the parent loader
      *
      */
@@ -142,7 +163,7 @@ class LoaderControllerTest extends TestCase
         $this->assertEquals(0, $route->getMaxParameters());
 
         // Verify a route with a different HTTP method
-        $action = 'ActionCity Updatestuff';
+        $action = 'ActionCity Post Updatestuff';
         $route = Bank::getNamedRoute($action);
 
         $this->assertEquals($action, $route->getName());
