@@ -11,6 +11,8 @@ use Metrol\Route\Attributes\Route;
  */
 class AttributeCity extends Controller
 {
+    const MATCH_PREFIX = '/tester/';
+
     public function __construct()
     {
         parent::__construct();
@@ -30,7 +32,7 @@ class AttributeCity extends Controller
      * Has a custom route name and match string in the docBlock here.
      *
      */
-    #[Route(name: 'Funky Page View', args: [':int', ':int'])]
+    #[Route(name: 'Funky Page View', args: [Route::HINT_INT, Route::HINT_STR])]
     public function pageview(array $args): string
     {
         return '';
@@ -41,7 +43,8 @@ class AttributeCity extends Controller
      * turned into a slash for the match string.
      *
      */
-    public function get_page_view_wide(array $args): string
+    #[Route]
+    public function page_view_wide(array $args): string
     {
         return '';
     }
@@ -49,11 +52,9 @@ class AttributeCity extends Controller
     /**
      * The match string should be at the root of the prefix
      *
-     * @routename Page Index Root
-     * @maxparam  0
-     *
      */
-    public function get_(array $args): string
+    #[Route(match: '/', maxParam: 3)]
+    public function index(array $args): string
     {
         return '';
     }
@@ -62,7 +63,8 @@ class AttributeCity extends Controller
      * See if the HTTP method is properly parsed
      *
      */
-    public function post_updatestuff(array $args): string
+    #[Route(method: Route::POST)]
+    public function updatestuff(array $args): string
     {
         return '';
     }
@@ -71,18 +73,8 @@ class AttributeCity extends Controller
      * Shouldn't be turned into a route because it's private
      *
      */
-    private function get_nothing(array $args): string
-    {
-        return '';
-    }
-
-    /**
-     * Should be ignored since it doesn't have an expected prefix
-     *
-     * @routename NonRoute
-     *
-     */
-    public function notARoute(array $args): string
+    #[Route(name: 'I should not exist in the routes')]
+    private function nothing(array $args): string
     {
         return '';
     }

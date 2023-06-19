@@ -133,10 +133,41 @@ class LoaderControllerTest extends TestCase
         $parser = new Load\Controller($refClass);
         $parser->run();
 
-        $bank = Bank::getAllRoutes();
+        // Quick reference of routes while working on tests
+        // $bank = Bank::getAllRoutes();
 
-        $x = 1;
+        $action = 'AttributeCity Get View';
 
+        $route = Bank::getNamedRoute($action);
+        $this->assertEquals($action, $route->getName());
+
+        // Check for type hinting added to the match string
+        $action = 'Funky Page View';
+        $match  = '/tester/pageview/:int/:str/';
+        $route = Bank::getNamedRoute($action);
+        $this->assertEquals($action, $route->getName());
+        $this->assertEquals($match, $route->getMatchString());
+        $this->assertEquals('GET', $route->getHttpMethod());
+        $this->assertEquals(0, $route->getMaxParameters());
+
+        // Check that the POST action has the correct method
+        $action = 'AttributeCity Post Updatestuff';
+        $match  = '/tester/updatestuff/';
+
+        $route = Bank::getNamedRoute($action);
+        $this->assertEquals($action, $route->getName());
+        $this->assertEquals($match, $route->getMatchString());
+        $this->assertEquals('POST', $route->getHttpMethod());
+
+        // Check that the POST action has the correct method
+        $action = 'AttributeCity Get Index';
+        $match  = '/';
+
+        $route = Bank::getNamedRoute($action);
+        $this->assertEquals($action, $route->getName());
+        $this->assertEquals($match, $route->getMatchString());
+        $this->assertEquals('GET', $route->getHttpMethod());
+        $this->assertEquals(3, $route->getMaxParameters());
     }
 
     /**

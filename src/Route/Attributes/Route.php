@@ -12,6 +12,38 @@ use Attribute;
 #[Attribute(Attribute::TARGET_METHOD)]
 class Route
 {
+    /**
+     * Hints to look for in the match string
+     *
+     */
+    const HINT_INT  = ':int';
+    const HINT_NUM  = ':num';
+    const HINT_STR  = ':str';
+
+    /**
+     * GET should be used for a request to read data
+     *
+     */
+    const GET = 'GET';
+
+    /**
+     * POST should be used to create a new record
+     *
+     */
+    const POST = 'POST';
+
+    /**
+     * PUT is to Update or Replace information
+     *
+     */
+    const PUT = 'PUT';
+
+    /**
+     * DELETE requests information be removed
+     *
+     */
+    const DELETE = 'DELETE';
+
     public string $match    = '';
     public string $method   = '';
     public string $name     = '';
@@ -21,10 +53,10 @@ class Route
      * Appends arguments to the end of the URL
      *
      */
-    public array  $args     = [];
+    public array $args = [];
 
     public function __construct(string $match    = null,
-                                string $method   = 'get',
+                                string $method   = self::GET,
                                 string $name     = null,
                                 int    $maxParam = null,
                                 array  $args     = null

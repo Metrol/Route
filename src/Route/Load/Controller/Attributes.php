@@ -29,6 +29,7 @@ class Attributes
     }
 
     /**
+     * Add routes based on the attribute of each action
      *
      */
     public function run(): void
@@ -48,13 +49,11 @@ class Attributes
                 $route = new Route($routeName);
 
                 $route->setMatchString($this->getMatch($method, $attrRoute));
-
                 $route->addAction($this->getAction($method));
-
-//                $this->setMaxParams($route, $attrib);
+                $route->setHttpMethod($attrRoute->method);
+                $route->setMaxParameters($attrRoute->maxParam);
 
                 Bank::addRoute($route);
-                $x = 1;
             }
         }
     }
@@ -79,10 +78,11 @@ class Attributes
         $linkPrefix = str_replace('\\', ' ', $linkPrefix);
 
         $methodName = $method->getName();
+        $httpMethod = strtolower($attrRoute->method);
 
         $methodName = str_replace('_', ' ', $methodName);
 
-        $routeName = ucwords($linkPrefix . ' ' . $methodName);
+        $routeName = ucwords($linkPrefix . ' ' . $httpMethod. ' ' . $methodName);
 
         return trim($routeName);
     }
