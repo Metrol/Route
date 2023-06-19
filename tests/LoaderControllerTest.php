@@ -10,6 +10,7 @@ namespace Metrol\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Metrol\Route\{Load, Bank};
+use ReflectionClass;
 
 /**
  * Verifies that routes can be loaded from a controller class, as well as a
@@ -28,10 +29,12 @@ class LoaderControllerTest extends TestCase
         Bank::clearAllRoutes();
         $controllerName = '\Metrol\Tests\Controller\ActionCity';
 
-        $parser = new Load\Controller;
-        $parser->setControllerName($controllerName)->run();
+        $refClass = new ReflectionClass($controllerName);
 
-        $action = $controllerName . ':get_view';
+        $parser = new Load\Controller($refClass);
+        $parser->run();
+
+        $action = 'ActionCity View';
 
         $route = Bank::getNamedRoute($action);
         $this->assertEquals($action, $route->getName());
@@ -41,7 +44,7 @@ class LoaderControllerTest extends TestCase
         $this->assertEquals(0, $route->getMaxParameters());
 
         // Verify a route with a different HTTP method
-        $action = $controllerName . ':post_updatestuff';
+        $action = 'ActionCity Updatestuff';
         $route = Bank::getNamedRoute($action);
 
         $this->assertEquals($action, $route->getName());
@@ -90,6 +93,32 @@ class LoaderControllerTest extends TestCase
     }
 
     /**
+     * Test that method names with underscores break up into segments in the
+     * link and spaces for the route name
+     *
+     */
+    public function testMethodDirectories(): void
+    {
+        // Make sure all routes going into the bank are from here
+        Bank::clearAllRoutes();
+        $controllerName = '\Metrol\Tests\Controller\ActionCity';
+
+        $refClass = new ReflectionClass($controllerName);
+
+        $parser = new Load\Controller($refClass);
+        $parser->run();
+
+        $action = 'ActionCity Report Annual';
+
+        $route = Bank::getNamedRoute($action);
+        $this->assertEquals($action, $route->getName());
+
+        $this->assertEquals('/tester/report/annual/', $route->getMatchString());
+        $this->assertEquals('GET', $route->getHttpMethod());
+        $this->assertEquals(0, $route->getMaxParameters());
+    }
+
+    /**
      * Test loading multiple controller classes with the parent loader
      *
      */
@@ -103,8 +132,7 @@ class LoaderControllerTest extends TestCase
         $parser = new Load\ControllerParent($parentControllerName);
         $parser->run();
 
-        $controllerName = '\Metrol\Tests\Controller\ActionCity';
-        $action = $controllerName . ':get_view';
+        $action = 'ActionCity View';
 
         $route = Bank::getNamedRoute($action);
         $this->assertEquals($action, $route->getName());
@@ -114,7 +142,7 @@ class LoaderControllerTest extends TestCase
         $this->assertEquals(0, $route->getMaxParameters());
 
         // Verify a route with a different HTTP method
-        $action = $controllerName . ':post_updatestuff';
+        $action = 'ActionCity Updatestuff';
         $route = Bank::getNamedRoute($action);
 
         $this->assertEquals($action, $route->getName());

@@ -131,27 +131,9 @@ class ControllerParent
                 continue;
             }
 
-            $controllerLoader = new Controller;
-            $controllerLoader
-                ->setControllerName($controllerName)
-                ->setMatchPrefix($this->getControllerLinkPrefix($controllerName))
-                ->run();
+            $controllerLoader = new Controller($contReflect);
+            $controllerLoader->run();
         }
-    }
-
-    /**
-     * Figure out the link prefix for the controller name
-     *
-     */
-    private function getControllerLinkPrefix( string $controllerName ): string
-    {
-        $parNameLen = strlen($this->parentControllerName) + 1;
-
-        $linkPrefix = substr($controllerName, $parNameLen);
-        $linkPrefix = str_replace('\\', '/', $linkPrefix);
-        $linkPrefix = '/' . $linkPrefix . '/';
-
-        return strtolower($linkPrefix);
     }
 
     /**

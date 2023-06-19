@@ -4,19 +4,12 @@ namespace Metrol\Tests\Controller;
 use Metrol\Tests\Controller;
 
 /**
- * This is pretend controller that will be parsed for route information
+ * This is pretend controller uses Attributes instead of doc blocks to
+ * establish routes
  *
  */
-class ActionCity extends Controller
+class AttributeCity extends Controller
 {
-    /**
-     * What the match strings should start with instead of the controller name
-     * as the first segment.
-     *
-     */
-    const MATCH_PREFIX = '/tester/';
-
-
     public function __construct()
     {
         parent::__construct();
@@ -26,16 +19,8 @@ class ActionCity extends Controller
      * Called to view a page.
      *
      */
-    public function get_view(array $args): string
-    {
-        return '';
-    }
-
-    /**
-     * Should bust up underscores into directories and such
-     *
-     */
-    public function get_report_annual(array $args): string
+    #[Route(match: '/')]
+    public function view(array $args): string
     {
         return '';
     }
