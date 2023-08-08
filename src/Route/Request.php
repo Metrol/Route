@@ -19,6 +19,10 @@ class Request
     const DEFAULT_URI = '/';
     const DEFAULT_HTTP_METHOD = Metrol\Route::HTTP_GET;
 
+    private const ALLOWED_METHODS = [
+        'GET', 'POST', 'PUT', 'DELETE'
+    ];
+
     /**
      * The URI being passed in as part of the request
      *
@@ -99,11 +103,7 @@ class Request
     {
         $httpMethod = strtoupper($httpMethod);
 
-        $allowedMethods = [
-            'GET', 'POST', 'PUT', 'DELETE'
-        ];
-
-        if ( in_array($httpMethod, $allowedMethods) )
+        if ( in_array($httpMethod, self::ALLOWED_METHODS) )
         {
             $this->httpMethod = $httpMethod;
         }
