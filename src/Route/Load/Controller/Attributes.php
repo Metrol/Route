@@ -20,7 +20,6 @@ class Attributes
     /**
      * Instantiate the Controller Attribute loader
      *
-     * @param ReflectionClass $reflect
      */
     public function __construct(ReflectionClass $reflect)
     {

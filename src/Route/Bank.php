@@ -59,7 +59,7 @@ class Bank
      * Find a route by name
      *
      */
-    public static function getNamedRoute(string $routeName): ?Metrol\Route
+    public static function getNamedRoute(string $routeName): Metrol\Route|null
     {
         if ( isset(self::$routes[ $routeName ]) )
         {
@@ -96,7 +96,7 @@ class Bank
      * Find a route for the specified Request
      *
      */
-    public static function getRequestedRoute(Metrol\Route\Request $request): ?Metrol\Route
+    public static function getRequestedRoute(Metrol\Route\Request $request): Metrol\Route|null
     {
         foreach ( array_reverse(self::$routes) as $route )
         {
@@ -135,7 +135,7 @@ class Bank
 
             foreach ( $route->getActions() as $action )
             {
-                $actionList[] = $action->getControllerClass().':'.
+                $actionList[] = $action->getControllerClass() . ':' .
                     $action->getControllerMethod();
             }
 

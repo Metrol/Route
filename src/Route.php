@@ -93,7 +93,6 @@ class Route
      * When checking if this route matches, any arguments found in the URI
      * are passed along into this list.
      *
-     * @var array
      */
     protected array $foundArguments = [];
 

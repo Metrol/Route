@@ -20,7 +20,6 @@ class Dispatcher
     /**
      * Errors that may occur when trying to get a route
      *
-     * @const integer
      */
     const READY_TO_EXECUTE     = 0;
     const ROUTE_NOT_FOUND      = 12;
@@ -64,7 +63,6 @@ class Dispatcher
      * Takes in and saves the Route that will be loaded up along with the
      * Request that came across.
      *
-     * @param Request $request
      */
     public function __construct(Request $request)
     {
@@ -75,7 +73,7 @@ class Dispatcher
      * Performs a lookup on the request to establish all the actions that need
      * to be executed.  This will also set the route status flag accordingly.
      *
-     * @return $this */
+     */
     public function run(): static
     {
         $route = $this->findRoute();

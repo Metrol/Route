@@ -44,7 +44,7 @@ class Action
     }
 
     /**
-     * Takes in a colon delimited string and separates it out to the Controller/
+     * Takes in a colon delimited string and separates it out to the Controller
      * Method pair that makes up an action.
      *
      * @param string $action

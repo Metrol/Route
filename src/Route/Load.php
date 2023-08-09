@@ -8,7 +8,6 @@
 
 namespace Metrol\Route;
 
-use Metrol;
 use const PATHINFO_EXTENSION;
 
 /**
@@ -32,7 +31,7 @@ class Load
     private string $fileName = '';
 
     /**
-     * Initialize the object
+     * Initialize the route file loader
      *
      */
     public function __construct()
@@ -40,10 +39,8 @@ class Load
     }
 
     /**
+     * Specify the file to look up routes in
      *
-     * @param string $fileName
-     *
-     * @return $this
      */
     public function setFileName(string $fileName): static
     {

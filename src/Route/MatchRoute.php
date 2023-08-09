@@ -45,7 +45,6 @@ class MatchRoute
      * route was not a match.  This should not be relied upon for anything but
      * testing.
      *
-     * @var string
      */
     public static string $noMatchReason = '';
 
@@ -161,6 +160,7 @@ class MatchRoute
         elseif ( empty($reqSegments) and $rt->getMatchString() != '/' )
         {
             self::$noMatchReason = 'No requested segments, and not root doc';
+
             return false;
         }
 
