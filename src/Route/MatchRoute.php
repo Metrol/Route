@@ -38,7 +38,7 @@ class MatchRoute
      * Found Arguments
      *
      */
-    private array $args;
+    private array $args = [];
 
     /**
      * For testing purposes, records which step in the process decided that the
@@ -68,7 +68,6 @@ class MatchRoute
 
         $inst->request = $request;
         $inst->route   = $route;
-        $inst->args    = [];
 
         $rtn = $inst->run();
 
@@ -283,20 +282,45 @@ class MatchRoute
     /**
      * Compares the URI segment to a type hinted filter
      *
-     * @param string $reqSegment Segment from the requested URI
+     * @param mixed  $reqSegment Segment from the requested URI
      * @param string $rtSegment  Segment from the Route match string
      *
      * @return boolean
      */
-    protected function hintMatch(string $reqSegment, string $rtSegment): bool
+    protected function hintMatch(mixed $reqSegment, string $rtSegment): bool
     {
-        $rtn = match (substr($rtSegment, 0, 4))
+        $rtn = false;
+
+        switch (substr($rtSegment, 0, 4))
         {
-            Metrol\Route::HINT_INTEGER => $this->compareInteger($reqSegment, $rtSegment),
-            Metrol\Route::HINT_NUMBER => $this->compareNumber($reqSegment, $rtSegment),
-            Metrol\Route::HINT_STRING => $this->compareString($reqSegment, $rtSegment),
-            default => false,
-        };
+            case Metrol\Route::HINT_INTEGER:
+                $rtn = $this->compareInteger($reqSegment, $rtSegment);
+
+                if ( $rtn )
+                {
+                    $reqSegment = intval($reqSegment);
+                }
+
+                break;
+            case Metrol\Route::HINT_NUMBER:
+                $rtn = $this->compareNumber($reqSegment, $rtSegment);
+
+                if ( $rtn )
+                {
+                    $reqSegment = floatval($reqSegment);
+                }
+
+                break;
+            case Metrol\Route::HINT_STRING:
+                $rtn = $this->compareString($reqSegment, $rtSegment);
+
+                if ( $rtn )
+                {
+                    $reqSegment = strval($reqSegment);
+                }
+
+                break;
+        }
 
         if ( $rtn )
         {
