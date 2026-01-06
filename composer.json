@@ -18,7 +18,7 @@
     ],
 
     "require" : {
-        "php"           : "8.0.*",
+        "php"           : "8.4.*",
         "metrol/request": "dev-master"
     },
 
