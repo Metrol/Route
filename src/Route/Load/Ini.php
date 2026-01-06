@@ -26,11 +26,11 @@ class Ini
      *
      * @const
      */
-    const KEY_ACTION_PREFIX = 'actionPrefix';
-    const KEY_MATCH         = 'match';
-    const KEY_METHOD        = 'method';
-    const KEY_ACTION        = 'action';
-    const KEY_MAX_PARAMS    = 'params';
+    const string KEY_ACTION_PREFIX = 'actionPrefix';
+    const string KEY_MATCH         = 'match';
+    const string KEY_METHOD        = 'method';
+    const string KEY_ACTION        = 'action';
+    const string KEY_MAX_PARAMS    = 'params';
 
     /**
      * File name being looked at for routes

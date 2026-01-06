@@ -18,33 +18,33 @@ class Route
      * Hints to look for in the match string
      *
      */
-    const HINT_INTEGER = ':int';
-    const HINT_NUMBER  = ':num';
-    const HINT_STRING  = ':str';
+    const string HINT_INTEGER = ':int';
+    const string HINT_NUMBER  = ':num';
+    const string HINT_STRING  = ':str';
 
     /**
      * GET should be used for a request to read data
      *
      */
-    const HTTP_GET = 'GET';
+    const string HTTP_GET = 'GET';
 
     /**
      * POST should be used to create a new record
      *
      */
-    const HTTP_POST = 'POST';
+    const string HTTP_POST = 'POST';
 
     /**
      * PUT is to Update or Replace information
      *
      */
-    const HTTP_PUT = 'PUT';
+    const string HTTP_PUT = 'PUT';
 
     /**
      * DELETE requests information be removed
      *
      */
-    const HTTP_DELETE = 'DELETE';
+    const string HTTP_DELETE = 'DELETE';
 
     /**
      * List of all the allowed methods that can be processed here

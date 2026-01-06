@@ -41,6 +41,9 @@ class Attributes
 
             foreach ($attributes as $attrib)
             {
+                /**
+                 * @var AttrRoute $attrRoute
+                 */
                 $attrRoute = $attrib->newInstance();
 
                 $routeName = $this->getRouteName($method, $attrRoute);

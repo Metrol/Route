@@ -27,7 +27,7 @@ class ControllerParent
      * Extension used for PHP files
      *
      */
-    const PHP_EXT = '.php';
+    const string PHP_EXT = '.php';
 
     /**
      * The controller class name in question

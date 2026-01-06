@@ -21,8 +21,8 @@ class Load
      * File extensions that are supported by this object.
      *
      */
-    const EXT_INI  = 'ini';
-    const EXT_JSON = 'json';
+    const string EXT_INI  = 'ini';
+    const string EXT_JSON = 'json';
 
     /**
      * File name being looked at for routes

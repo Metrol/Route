@@ -16,10 +16,10 @@ use Metrol;
  */
 class Request
 {
-    const DEFAULT_URI = '/';
-    const DEFAULT_HTTP_METHOD = Metrol\Route::HTTP_GET;
+    const string DEFAULT_URI         = '/';
+    const string DEFAULT_HTTP_METHOD = Metrol\Route::HTTP_GET;
 
-    private const ALLOWED_METHODS = [
+    private const array ALLOWED_METHODS = [
         'GET', 'POST', 'PUT', 'DELETE'
     ];
 

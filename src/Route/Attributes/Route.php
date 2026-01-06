@@ -16,39 +16,39 @@ class Route
      * Hints to look for in the match string
      *
      */
-    const HINT_INT  = ':int';
-    const HINT_NUM  = ':num';
-    const HINT_STR  = ':str';
+    const string HINT_INT = ':int';
+    const string HINT_NUM = ':num';
+    const string HINT_STR = ':str';
 
     /**
      * GET should be used for a request to read data
      *
      */
-    const GET = 'GET';
+    const string GET = 'GET';
 
     /**
      * POST should be used to create a new record
      *
      */
-    const POST = 'POST';
+    const string POST = 'POST';
 
     /**
      * PUT is to Update or Replace information
      *
      */
-    const PUT = 'PUT';
+    const string PUT = 'PUT';
 
     /**
      * DELETE requests information be removed
      *
      */
-    const DELETE = 'DELETE';
+    const string DELETE = 'DELETE';
 
     /**
      * List of all the allowed methods that can be processed here
      *
      */
-    private const METHOD_REF = [
+    private const array METHOD_REF = [
         self::GET,
         self::POST,
         self::PUT,
@@ -59,7 +59,7 @@ class Route
      * List of the allowed type hints
      *
      */
-    private const TYPE_HINT_REF = [
+    private const array TYPE_HINT_REF = [
         self::HINT_STR,
         self::HINT_INT,
         self::HINT_NUM
@@ -76,11 +76,11 @@ class Route
      */
     public array $args = [];
 
-    public function __construct(string $match    = null,
-                                string $method   = self::GET,
-                                string $name     = null,
-                                int    $maxParam = null,
-                                array  $args     = null
+    public function __construct(?string $match    = null,
+                                string  $method   = self::GET,
+                                ?string $name     = null,
+                                ?int    $maxParam = null,
+                                ?array  $args     = null
                                 )
     {
         if ( ! is_null($match) )

@@ -24,12 +24,12 @@ class DocBlock
      * Method prefixes that indicate what HTTP method should be matched.
      *
      */
-    const METHOD_GET    = 'get_';
-    const METHOD_POST   = 'post_';
-    const METHOD_DELETE = 'delete_';
-    const METHOD_PUT    = 'put_';
+    const string METHOD_GET    = 'get_';
+    const string METHOD_POST   = 'post_';
+    const string METHOD_DELETE = 'delete_';
+    const string METHOD_PUT    = 'put_';
 
-    private const PREFIX_REF = [
+    private const array PREFIX_REF = [
         self::METHOD_GET,
         self::METHOD_POST,
         self::METHOD_PUT,
@@ -40,11 +40,11 @@ class DocBlock
      * Doc block flags to look for
      *
      */
-    const TAG_MATCH     = '@match';
-    const TAG_NAME      = '@routename';
-    const TAG_MAX_PARAM = '@maxparam';
+    const string TAG_MATCH     = '@match';
+    const string TAG_NAME      = '@routename';
+    const string TAG_MAX_PARAM = '@maxparam';
 
-    private const TAG_REF = [
+    private const array TAG_REF = [
         self::TAG_MATCH,
         self::TAG_NAME,
         self::TAG_MAX_PARAM

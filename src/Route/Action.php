@@ -32,7 +32,7 @@ class Action
      * @param string|null $action Take in a string with a "Class:Action" format to
      *                       simplify creating a single Action.
      */
-    public function __construct(string $action = null)
+    public function __construct(?string $action = null)
     {
         $this->controllerClass = '';
         $this->method          = '';

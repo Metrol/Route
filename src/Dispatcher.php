@@ -21,9 +21,9 @@ class Dispatcher
      * Errors that may occur when trying to get a route
      *
      */
-    const READY_TO_EXECUTE     = 0;
-    const ROUTE_NOT_FOUND      = 12;
-    const ACTION_NOT_FOUND     = 25;
+    const int READY_TO_EXECUTE = 0;
+    const int ROUTE_NOT_FOUND  = 12;
+    const int ACTION_NOT_FOUND = 25;
 
     /**
      * The Request object passed into the constructor that will be used to

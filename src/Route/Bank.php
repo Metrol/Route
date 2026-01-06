@@ -36,7 +36,7 @@ class Bank
      * Provide a URI string for the given named route
      *
      */
-    static public function uri(string $routeName, array $args = null): string
+    static public function uri(string $routeName, ?array $args = null): string
     {
         $route = self::getNamedRoute($routeName);
 
